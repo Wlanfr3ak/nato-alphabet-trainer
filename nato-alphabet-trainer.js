@@ -1,0 +1,24 @@
+// Work in Progress
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Click the Button to generator a String</p>
+
+<button onclick="nato-alphabet-trainer()">Try it</button>
+
+<p id="nato-alphabet-trainer"></p>
+
+<script>
+function nato-alphabet-trainer() {
+    var x = document.getElementById("nato-alphabet-trainer")
+    x.innerHTML = Math.floor((Math.random() * 27) + 1);
+}
+</script>
+
+</body>
+</html>
+
+
+
+var natocode = ["A", "Alpha", "B", "Bravo", "C", "Charlie", "D", "Delta", "E", "Echo", "F", "Foxtrot", "G", "Golf", "H", "Hotel", "I", "India", "J", "Juliet",  ];
