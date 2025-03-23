@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- 
+This Page is build with the help of Windsurf IDE and has used AI-Technology
+The target is to create a very easy Trainer for clean Radio communication with NATO and German Alphabet
+https://github.com/Wlanfr3ak/nato-alphabet-trainer
+License: GNU General Public License v3.0
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Alphabet Trainer</title>
+    <style>
+        :root {
+            --military-dark: #1a1f1c;
+            --military-light: #2a2f2b;
+            --military-accent: #4d5d23;
+            --military-text: #d4d6cd;
+            --military-highlight: #8fa65c;
+            --correct-green: #5d8c3f;
+            --incorrect-red: #a93226;
+            --military-border: #3d4d33;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--military-dark);
+            color: var(--military-text);
+            line-height: 1.6;
+        }
+        .container {
+            background-color: var(--military-light);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            border: 1px solid var(--military-border);
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            padding: 12px 24px;
+            border: 1px solid var(--military-border);
+            border-radius: 4px;
+            background-color: var(--military-accent);
+            color: var(--military-text);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            font-family: 'Courier New', monospace;
+        }
+        button:hover {
+            background-color: var(--military-highlight);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .display {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: var(--military-dark);
+            border-radius: 4px;
+            border: 1px solid var(--military-border);
+        }
+        .letter {
+            font-size: 84px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--military-text);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Courier New', monospace;
+        }
+        .multiple-choice {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .choice-button {
+            padding: 20px;
+            font-size: 1.2em;
+            background-color: var(--military-light);
+            border: 2px solid var(--military-border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--military-text);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Courier New', monospace;
+        }
+        .choice-button:hover {
+            background-color: var(--military-accent);
+            transform: translateY(-1px);
+        }
+        .choice-button.correct {
+            background-color: var(--correct-green);
+            color: white;
+            border-color: var(--correct-green);
+        }
+        .choice-button.incorrect {
+            background-color: var(--incorrect-red);
+            color: white;
+            border-color: var(--incorrect-red);
+        }
+        .scores {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: var(--military-light);
+            border-radius: 4px;
+            font-size: 1.2em;
+            border: 1px solid var(--military-border);
+            position: relative;
+        }
+        .score-item {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: var(--military-dark);
+            border-radius: 4px;
+            min-width: 150px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .score-item:hover {
+            background-color: var(--military-accent);
+        }
+        .score-item.active {
+            border-color: var(--military-highlight);
+        }
+        .score-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+            color: var(--military-highlight);
+        }
+        .score-details {
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .score-details span {
+            display: inline-block;
+            margin: 0 5px;
+        }
+        .percentage {
+            color: var(--military-highlight);
+            font-weight: bold;
+        }
+        .reset-button {
+            position: absolute;
+            top: -15px;
+            right: 10px;
+            padding: 5px 15px;
+            font-size: 0.8em;
+            background-color: var(--incorrect-red);
+        }
+        .help-content {
+            background-color: var(--military-light);
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border: 1px solid var(--military-border);
+        }
+        .help-content h2 {
+            color: var(--military-highlight);
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--military-border);
+            padding-bottom: 10px;
+        }
+        .help-content div {
+            margin-bottom: 20px;
+        }
+        .help-content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .help-content li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .help-content li:before {
+            content: "►";
+            position: absolute;
+            left: 0;
+            color: var(--military-highlight);
+        }
+        .license {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: var(--military-text);
+            text-align: center;
+            padding: 15px;
+            background-color: var(--military-light);
+            border-radius: 4px;
+            border: 1px solid var(--military-border);
+        }
+        .license a {
+            color: var(--military-highlight);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .license a:hover {
+            color: var(--military-text);
+            text-decoration: underline;
+        }
+        h1 {
+            text-align: center;
+            color: var(--military-highlight);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .hidden {
+            display: none !important;
+        }
+        .dictation-mode {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .dictation-input {
+            background-color: var(--military-dark);
+            border: 2px solid var(--military-border);
+            border-radius: 4px;
+            color: var(--military-text);
+            padding: 10px 15px;
+            font-size: 1.2em;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            width: 200px;
+            text-align: center;
+        }
+        .dictation-input:focus {
+            border-color: var(--military-highlight);
+            outline: none;
+        }
+        .dictation-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .word-display {
+            font-size: 1.5em;
+            color: var(--military-highlight);
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+        .mode-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .dictation-options {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--military-dark);
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--military-border);
+        }
+        .option-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--military-highlight);
+        }
+        .option-group label {
+            color: var(--military-text);
+            font-size: 0.9em;
+            user-select: none;
+        }
+        .test-mode-status {
+            background-color: var(--military-dark);
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+            border: 1px solid var(--military-border);
+        }
+        .test-results {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: var(--military-dark);
+            border-radius: 4px;
+            border: 1px solid var(--military-border);
+        }
+        .test-results.hidden {
+            display: none;
+        }
+        .accuracy-bar {
+            height: 20px;
+            background-color: var(--military-light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .accuracy-fill {
+            height: 100%;
+            background-color: var(--military-highlight);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Radio Alphabet Trainer</h1>
+        
+        <div class="controls">
+            <button onclick="generateNewLetter()">New Letter</button>
+            <button onclick="toggleMode()">Switch Mode</button>
+            <button onclick="toggleHelp()">Help / Hilfe</button>
+        </div>
+
+        <div class="display" id="multipleChoiceMode">
+            <div class="letter" id="currentLetter"></div>
+            <div class="multiple-choice" id="multipleChoice"></div>
+        </div>
+
+        <div class="dictation-mode hidden" id="dictationMode">
+            <div class="dictation-options">
+                <div class="option-group">
+                    <input type="checkbox" id="includeDates" onchange="startNewWord()">
+                    <label for="includeDates">Include Birth Dates</label>
+                </div>
+                <div class="option-group">
+                    <input type="checkbox" id="includeCoords" onchange="startNewWord()">
+                    <label for="includeCoords">Include GPS Coordinates</label>
+                </div>
+                <div class="option-group">
+                    <input type="checkbox" id="testMode" onchange="toggleTestMode()">
+                    <label for="testMode">Test Mode (10 Words)</label>
+                </div>
+            </div>
+            <div id="testModeStatus" class="test-mode-status hidden">
+                Word <span id="currentWordCount">0</span>/10
+            </div>
+            <div class="word-display" id="currentWord"></div>
+            <div class="dictation-controls">
+                <button onclick="speakNextLetter()" id="speakButton">Speak Next Letter</button>
+                <input type="text" 
+                       class="dictation-input" 
+                       id="letterInput" 
+                       maxlength="1" 
+                       placeholder="Type letter"
+                       onkeyup="checkLetter(event)">
+            </div>
+            <div id="testResults" class="test-results hidden">
+                <h3>Test Results</h3>
+                <div>Total Characters: <span id="totalChars">0</span></div>
+                <div>Correct Characters: <span id="correctChars">0</span></div>
+                <div>Accuracy: <span id="accuracy">0</span>%</div>
+                <div class="accuracy-bar">
+                    <div class="accuracy-fill" id="accuracyBar" style="width: 0%"></div>
+                </div>
+                <button onclick="startNewTest()" style="margin-top: 10px">Start New Test</button>
+            </div>
+        </div>
+
+        <div class="scores">
+            <button onclick="resetScores()" class="reset-button">Reset Scores</button>
+            <div class="score-item" id="germanScoreBox" onclick="switchToGerman()">
+                <div class="score-label">🇩🇪 German Score</div>
+                <div class="score-details">
+                    <span class="correct">✓ <span id="germanCorrect">0</span></span>
+                    <span class="incorrect">✗ <span id="germanWrong">0</span></span>
+                    <div class="percentage">(<span id="germanPercentage">0</span>%)</div>
+                </div>
+            </div>
+            <div class="score-item" id="natoScoreBox" onclick="switchToNato()">
+                <div class="score-label">🌐 NATO Score</div>
+                <div class="score-details">
+                    <span class="correct">✓ <span id="natoCorrect">0</span></span>
+                    <span class="incorrect">✗ <span id="natoWrong">0</span></span>
+                    <div class="percentage">(<span id="natoPercentage">0</span>%)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="help-content hidden" id="helpContent">
+            <div>
+                <h2>🇬🇧 How to Use</h2>
+                <p>Welcome to the Radio Alphabet Trainer! This tool helps you learn and practice both NATO and German radio alphabets.</p>
+                <ul>
+                    <li><strong>Multiple Choice Mode:</strong>
+                        <ul>
+                            <li>Select the correct radio code word for each letter</li>
+                            <li>Instant feedback with color-coded responses</li>
+                        </ul>
+                    </li>
+                    <li><strong>Dictation Mode:</strong>
+                        <ul>
+                            <li>Listen to code words and type the corresponding letters</li>
+                            <li>Practice with names, birth dates, and GPS coordinates</li>
+                            <li>Test mode available for formal assessment (10 words)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Options:</strong>
+                        <ul>
+                            <li>Switch between NATO and German alphabets by clicking score boxes</li>
+                            <li>Enable birth dates (DD/MM/YYYY) for additional practice</li>
+                            <li>Add GPS coordinates for location training</li>
+                            <li>Test mode for accuracy assessment</li>
+                        </ul>
+                    </li>
+                    <li><strong>Scoring:</strong>
+                        <ul>
+                            <li>Track correct and incorrect answers for each alphabet</li>
+                            <li>Percentage success rate for each alphabet</li>
+                            <li>Separate test mode scoring with detailed accuracy metrics</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h2>🇩🇪 Bedienungsanleitung</h2>
+                <p>Willkommen beim Buchstabiertafel-Trainer! Dieses Tool hilft dir beim Lernen und Üben des NATO- und deutschen Buchstabieralphabets.</p>
+                <ul>
+                    <li><strong>Multiple-Choice-Modus:</strong>
+                        <ul>
+                            <li>Wähle das richtige Buchstabierwort für jeden Buchstaben</li>
+                            <li>Sofortiges Feedback mit farblicher Kennzeichnung</li>
+                        </ul>
+                    </li>
+                    <li><strong>Diktat-Modus:</strong>
+                        <ul>
+                            <li>Höre Buchstabierworte und tippe die entsprechenden Buchstaben</li>
+                            <li>Übe mit Namen, Geburtsdaten und GPS-Koordinaten</li>
+                            <li>Testmodus für formelle Bewertung (10 Wörter)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Optionen:</strong>
+                        <ul>
+                            <li>Wechsel zwischen NATO- und deutschem Alphabet durch Klick auf Punkteboxen</li>
+                            <li>Aktiviere Geburtsdaten (TT/MM/JJJJ) für zusätzliches Training</li>
+                            <li>Füge GPS-Koordinaten für Standorttraining hinzu</li>
+                            <li>Testmodus für Genauigkeitsbewertung</li>
+                        </ul>
+                    </li>
+                    <li><strong>Punktewertung:</strong>
+                        <ul>
+                            <li>Verfolge richtige und falsche Antworten für jedes Alphabet</li>
+                            <li>Prozentuale Erfolgsquote für jedes Alphabet</li>
+                            <li>Separate Testmodus-Wertung mit detaillierten Genauigkeitsmetriken</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="license">
+            <p><a href="https://github.com/Wlanfr3ak/nato-alphabet-trainer">https://github.com/Wlanfr3ak/nato-alphabet-trainer</a><br>
+            Licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GNU General Public License v3.0</a></p>
+        </div>
+    </div>
+
+    <script>
+        const natoAlphabet = {
+            'A': 'Alpha', 'B': 'Bravo', 'C': 'Charlie', 'D': 'Delta', 'E': 'Echo',
+            'F': 'Foxtrot', 'G': 'Golf', 'H': 'Hotel', 'I': 'India', 'J': 'Juliet',
+            'K': 'Kilo', 'L': 'Lima', 'M': 'Mike', 'N': 'November', 'O': 'Oscar',
+            'P': 'Papa', 'Q': 'Quebec', 'R': 'Romeo', 'S': 'Sierra', 'T': 'Tango',
+            'U': 'Uniform', 'V': 'Victor', 'W': 'Whiskey', 'X': 'X-ray',
+            'Y': 'Yankee', 'Z': 'Zulu'
+        };
+
+        const germanAlphabet = {
+            'A': 'Anton', 'Ä': 'Ärger', 'B': 'Berta', 'C': 'Cäsar', 'CH': 'Charlotte',
+            'D': 'Dora', 'E': 'Emil', 'F': 'Friedrich', 'G': 'Gustav', 'H': 'Heinrich',
+            'I': 'Ida', 'J': 'Julius', 'K': 'Kaufmann', 'L': 'Ludwig', 'M': 'Martha',
+            'N': 'Nordpol', 'O': 'Otto', 'Ö': 'Ökonom', 'P': 'Paula', 'Q': 'Quelle',
+            'R': 'Richard', 'S': 'Samuel', 'SCH': 'Schule', 'ß': 'Eszett', 'T': 'Theodor',
+            'U': 'Ulrich', 'Ü': 'Übermut', 'V': 'Viktor', 'W': 'Wilhelm', 'X': 'Xanthippe',
+            'Y': 'Ypsilon', 'Z': 'Zacharias'
+        };
+
+        // First names for each letter - German names
+        const germanFirstNames = {
+            'A': ['Andreas', 'Anton', 'Albert', 'Angelika', 'Annika', 'August', 'Axel', 'Armin', 'Annette', 'Astrid'],
+            'B': ['Bernd', 'Birgit', 'Boris', 'Bastian', 'Benedikt', 'Britta', 'Bertram', 'Beate', 'Bernhard', 'Barbara'],
+            'C': ['Christian', 'Christoph', 'Claudia', 'Carsten', 'Carmen', 'Cornelia', 'Claus', 'Charlotte', 'Cornelius', 'Carina'],
+            'D': ['Dieter', 'Dirk', 'Doris', 'Detlef', 'Dagmar', 'Dennis', 'Dominik', 'Diana', 'Daniel', 'Dora'],
+            'E': ['Ernst', 'Erich', 'Eva', 'Elke', 'Eduard', 'Emma', 'Eberhard', 'Elisabeth', 'Erwin', 'Eckhard'],
+            'F': ['Franz', 'Friedrich', 'Frank', 'Felix', 'Florian', 'Franziska', 'Ferdinand', 'Frieda', 'Fritz', 'Fabian'],
+            'G': ['Günther', 'Gerhard', 'Gisela', 'Georg', 'Gabriele', 'Gustav', 'Gerd', 'Gudrun', 'Gregor', 'Gertrud'],
+            'H': ['Hans', 'Heinrich', 'Helmut', 'Herbert', 'Horst', 'Heike', 'Harald', 'Helga', 'Hermann', 'Heinz'],
+            'I': ['Ingrid', 'Ingo', 'Iris', 'Irmgard', 'Ilse', 'Isabel', 'Imke', 'Ines', 'Ingeborg', 'Irene'],
+            'J': ['Jürgen', 'Johann', 'Josef', 'Joachim', 'Jens', 'Julia', 'Johannes', 'Jana', 'Jochen', 'Jutta'],
+            'K': ['Karl', 'Klaus', 'Kurt', 'Konrad', 'Karsten', 'Kathrin', 'Kristian', 'Karin', 'Kai', 'Katja'],
+            'L': ['Ludwig', 'Lothar', 'Lars', 'Lutz', 'Lisa', 'Lena', 'Lukas', 'Laura', 'Leon', 'Lotte'],
+            'M': ['Manfred', 'Michael', 'Martin', 'Matthias', 'Markus', 'Monika', 'Maria', 'Martina', 'Marcel', 'Marion'],
+            'N': ['Norbert', 'Nikolaus', 'Nina', 'Nils', 'Nicole', 'Nadine', 'Norman', 'Natalie', 'Nick', 'Nora'],
+            'O': ['Otto', 'Olaf', 'Oscar', 'Oliver', 'Ottmar', 'Ortwin', 'Oskar', 'Olivia', 'Oswald', 'Olga'],
+            'P': ['Peter', 'Paul', 'Philipp', 'Patrick', 'Petra', 'Patricia', 'Pascal', 'Paula', 'Pius', 'Pamela'],
+            'Q': ['Quirin', 'Quintus', 'Quentin', 'Quirina', 'Quint', 'Quilla', 'Quincy', 'Quinta', 'Quido', 'Quiana'],
+            'R': ['Rainer', 'Rudolf', 'Roland', 'Richard', 'Rolf', 'Renate', 'Robert', 'Rita', 'Rüdiger', 'Regina'],
+            'S': ['Stefan', 'Siegfried', 'Sebastian', 'Sven', 'Steffen', 'Sabine', 'Silvia', 'Sandra', 'Simon', 'Susanne'],
+            'T': ['Thomas', 'Thorsten', 'Tobias', 'Till', 'Timo', 'Tanja', 'Theresa', 'Tim', 'Torsten', 'Tina'],
+            'U': ['Ulrich', 'Uwe', 'Udo', 'Urban', 'Ulf', 'Ursula', 'Ute', 'Ulrike', 'Urs', 'Undine'],
+            'V': ['Volker', 'Viktor', 'Volkmar', 'Vincent', 'Valentin', 'Vera', 'Vanessa', 'Verena', 'Veit', 'Viola'],
+            'W': ['Walter', 'Werner', 'Wolfgang', 'Wilhelm', 'Wilfried', 'Walther', 'Wolfram', 'Willi', 'Winfried', 'Wiebke'],
+            'X': ['Xaver', 'Xerxes', 'Xavier', 'Xiomar', 'Xenia', 'Ximena', 'Xanthippe', 'Xenon', 'Xico', 'Xara'],
+            'Y': ['Yves', 'Yannik', 'Yorck', 'Yannick', 'Yasmin', 'Yvonne', 'Yara', 'Yella', 'York', 'Yuna'],
+            'Z': ['Zacharias', 'Zeno', 'Zoltan', 'Zander', 'Zora', 'Zita', 'Zelda', 'Zack', 'Zimra', 'Zoe']
+        };
+
+        // First names for each letter - English names
+        const englishFirstNames = {
+            'A': ['Adam', 'Aaron', 'Adrian', 'Alan', 'Alexander', 'Andrew', 'Anthony', 'Arthur', 'Austin', 'Abigail'],
+            'B': ['Benjamin', 'Blake', 'Brandon', 'Brian', 'Bruce', 'Bradley', 'Brett', 'Bryce', 'Bailey', 'Brooke'],
+            'C': ['Charles', 'Christopher', 'Caleb', 'Cameron', 'Carter', 'Chase', 'Cole', 'Connor', 'Chloe', 'Claire'],
+            'D': ['David', 'Daniel', 'Derek', 'Dominic', 'Douglas', 'Dylan', 'Duncan', 'Dean', 'Daisy', 'Dawn'],
+            'E': ['Edward', 'Ethan', 'Eric', 'Evan', 'Elliott', 'Edwin', 'Earl', 'Elijah', 'Emily', 'Emma'],
+            'F': ['Francis', 'Fred', 'Franklin', 'Fraser', 'Flynn', 'Finley', 'Fletcher', 'Ford', 'Faith', 'Fiona'],
+            'G': ['George', 'Gordon', 'Graham', 'Grant', 'Gregory', 'Gary', 'Glen', 'Gavin', 'Grace', 'Georgia'],
+            'H': ['Henry', 'Harold', 'Harry', 'Harvey', 'Howard', 'Hugh', 'Hunter', 'Harrison', 'Hannah', 'Holly'],
+            'I': ['Ian', 'Isaac', 'Ivan', 'Irving', 'Ignatius', 'Ibrahim', 'Idris', 'Irvin', 'Ivy', 'Iris'],
+            'J': ['James', 'John', 'Jack', 'Joseph', 'Joshua', 'Jason', 'Justin', 'Jeremy', 'Jane', 'Jessica'],
+            'K': ['Keith', 'Kenneth', 'Kevin', 'Kieran', 'Kyle', 'Kent', 'Kane', 'Keegan', 'Kate', 'Kelly'],
+            'L': ['Lewis', 'Lee', 'Leonard', 'Louis', 'Lucas', 'Lawrence', 'Logan', 'Liam', 'Lucy', 'Linda'],
+            'M': ['Mark', 'Matthew', 'Michael', 'Miles', 'Mitchell', 'Morgan', 'Murray', 'Mason', 'Mary', 'Margaret'],
+            'N': ['Nathan', 'Neil', 'Nicholas', 'Norman', 'Nathaniel', 'Nelson', 'Nolan', 'Nash', 'Nancy', 'Natasha'],
+            'O': ['Oliver', 'Owen', 'Oscar', 'Otis', 'Orlando', 'Omar', 'Orion', 'Oakley', 'Olivia', 'Octavia'],
+            'P': ['Patrick', 'Paul', 'Peter', 'Philip', 'Percy', 'Preston', 'Parker', 'Pierce', 'Paige', 'Penelope'],
+            'Q': ['Quentin', 'Quinn', 'Quincy', 'Quinton', 'Quest', 'Quade', 'Quigley', 'Quillan', 'Queen', 'Queenie'],
+            'R': ['Robert', 'Richard', 'Ronald', 'Roger', 'Russell', 'Ryan', 'Raymond', 'Ross', 'Rachel', 'Rebecca'],
+            'S': ['Stephen', 'Samuel', 'Scott', 'Sean', 'Simon', 'Stanley', 'Stuart', 'Steven', 'Sarah', 'Sophie'],
+            'T': ['Thomas', 'Timothy', 'Trevor', 'Tyler', 'Theodore', 'Terry', 'Tony', 'Travis', 'Tracy', 'Tessa'],
+            'U': ['Ulysses', 'Umberto', 'Uriah', 'Usher', 'Utah', 'Upton', 'Unity', 'Uma', 'Ursula', 'Una'],
+            'V': ['Victor', 'Vincent', 'Vernon', 'Virgil', 'Valentine', 'Vaughn', 'Vance', 'Vick', 'Victoria', 'Violet'],
+            'W': ['William', 'Wayne', 'Warren', 'Wesley', 'Wallace', 'Wade', 'Walker', 'Walter', 'Wendy', 'Willow'],
+            'X': ['Xavier', 'Xerxes', 'Xiomar', 'Xico', 'Xiaoping', 'Xiomar', 'Xander', 'Xylo', 'Xena', 'Xiomara'],
+            'Y': ['Yancy', 'Yale', 'Yardley', 'Yates', 'Yeoman', 'York', 'Yuri', 'Yves', 'Yasmine', 'Yolanda'],
+            'Z': ['Zachary', 'Zane', 'Zander', 'Zeke', 'Zigmund', 'Zion', 'Zach', 'Zayn', 'Zara', 'Zelda']
+        };
+
+        const firstNames = [
+            "ANNA", "BERTHA", "CLARA", "DAVID", "EMIL", "FRIEDRICH",
+            "GUSTAV", "HEINRICH", "IDA", "JULIUS", "KARL", "LUDWIG",
+            "MARTHA", "NIKOLAUS", "OTTO", "PAULA", "QUELLE", "RICHARD",
+            "SIEGFRIED", "THEODOR", "ULRICH", "VIKTOR", "WILHELM", "XANTHIPPE",
+            "YVONNE", "ZACHARIAS", "MARIA", "HANS", "PETER", "THOMAS"
+        ];
+
+        const lastNames = [
+            "MUELLER", "SCHMIDT", "SCHNEIDER", "FISCHER", "WEBER", "MEYER",
+            "WAGNER", "BECKER", "SCHULZ", "HOFFMANN", "SCHAEFER", "KOCH",
+            "BAUER", "RICHTER", "KLEIN", "WOLF", "SCHROEDER", "NEUMANN",
+            "SCHWARZ", "ZIMMERMANN", "BRAUN", "KRUEGER", "HOFMANN", "HARTMANN",
+            "LANGE", "SCHMITT", "WERNER", "SCHMITZ", "KRAUSE", "MEIER"
+        ];
+
+        let currentAlphabet = natoAlphabet;
+        let germanCorrect = 0;
+        let germanWrong = 0;
+        let natoCorrect = 0;
+        let natoWrong = 0;
+        let currentLetter = '';
+
+        const wordPool = [
+            "ALPHA", "BRAVO", "CHARLIE", "DELTA", "ECHO", "FOXTROT",
+            "GERMANY", "HOTEL", "INDIA", "JULIET", "KILO", "LIMA",
+            "MIKE", "NOVEMBER", "OSCAR", "PAPA", "QUEBEC", "ROMEO",
+            "SIERRA", "TANGO", "UNIFORM", "VICTOR", "WHISKEY", "XRAY",
+            "YANKEE", "ZULU", "RADIO", "SIGNAL", "TOWER", "PILOT",
+            "CONTROL", "FLIGHT", "BASE", "COMMAND", "MISSION"
+        ];
+
+        let currentMode = 'multipleChoice';
+        let currentWord = '';
+        let currentLetterIndex = -1;
+        let speechSynth = window.speechSynthesis;
+
+        let isTestMode = false;
+        let testWordCount = 0;
+        let totalChars = 0;
+        let correctChars = 0;
+
+        function updateScores() {
+            document.getElementById('germanCorrect').textContent = germanCorrect;
+            document.getElementById('germanWrong').textContent = germanWrong;
+            document.getElementById('natoCorrect').textContent = natoCorrect;
+            document.getElementById('natoWrong').textContent = natoWrong;
+            
+            // Calculate and update percentages
+            const germanPercentage = germanCorrect + germanWrong > 0 
+                ? Math.round((germanCorrect / (germanCorrect + germanWrong)) * 100) 
+                : 0;
+            const natoPercentage = natoCorrect + natoWrong > 0 
+                ? Math.round((natoCorrect / (natoCorrect + natoWrong)) * 100) 
+                : 0;
+            
+            document.getElementById('germanPercentage').textContent = germanPercentage;
+            document.getElementById('natoPercentage').textContent = natoPercentage;
+
+            // Update active indicator
+            document.getElementById('germanScoreBox').classList.toggle('active', currentAlphabet === germanAlphabet);
+            document.getElementById('natoScoreBox').classList.toggle('active', currentAlphabet === natoAlphabet);
+        }
+
+        function resetScores() {
+            germanCorrect = 0;
+            germanWrong = 0;
+            natoCorrect = 0;
+            natoWrong = 0;
+            updateScores();
+        }
+
+        function switchToGerman() {
+            if (currentAlphabet !== germanAlphabet) {
+                currentAlphabet = germanAlphabet;
+                generateNewLetter();
+                updateScores();
+            }
+        }
+
+        function switchToNato() {
+            if (currentAlphabet !== natoAlphabet) {
+                currentAlphabet = natoAlphabet;
+                generateNewLetter();
+                updateScores();
+            }
+        }
+
+        function generateNewLetter() {
+            currentLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+            document.getElementById('currentLetter').textContent = currentLetter;
+            generateMultipleChoice();
+        }
+
+        function generateMultipleChoice() {
+            const correctWord = currentAlphabet[currentLetter];
+            const otherWords = generateWrongAnswers(currentLetter, correctWord);
+            const choices = [correctWord, ...otherWords.slice(0, 3)];
+            shuffleArray(choices);
+
+            const multipleChoice = document.getElementById('multipleChoice');
+            multipleChoice.innerHTML = '';
+            choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.className = 'choice-button';
+                button.textContent = choice;
+                button.onclick = () => checkAnswer(choice, correctWord, button);
+                multipleChoice.appendChild(button);
+            });
+        }
+
+        function generateWrongAnswers(letter, correctAnswer) {
+            const wrongAnswers = [];
+            const simpleLetter = letter.charAt(0); // Get first character for special characters like 'Ä'
+            
+            // Combine German and English names for the letter
+            const germanNames = germanFirstNames[simpleLetter] || germanFirstNames[simpleLetter.toUpperCase()] || [];
+            const englishNames = englishFirstNames[simpleLetter] || englishFirstNames[simpleLetter.toUpperCase()] || [];
+            const allNames = [...germanNames, ...englishNames];
+            
+            // Remove the correct answer if it happens to be in the names list
+            const availableNames = allNames.filter(name => name !== correctAnswer);
+            
+            // Shuffle all available names
+            shuffleArray(availableNames);
+
+            // Take first 3 names
+            return availableNames.slice(0, 3);
+        }
+
+        function checkAnswer(selected, correct, button) {
+            const allButtons = document.querySelectorAll('.choice-button');
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correct) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent === selected && selected !== correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (selected === correct) {
+                if (currentAlphabet === germanAlphabet) {
+                    germanCorrect++;
+                } else {
+                    natoCorrect++;
+                }
+                
+                // Update word display
+                const wordDisplay = document.getElementById('currentWord');
+                const displayedWord = wordDisplay.textContent.split(' ');
+                displayedWord[currentLetterIndex] = correctLetter;
+                wordDisplay.textContent = displayedWord.join(' ');
+                
+                // Clear input and prepare for next letter
+                event.target.value = '';
+                
+                if (currentLetterIndex === currentWord.length - 1) {
+                    if (isTestMode) {
+                        testWordCount++;
+                        updateTestStatus();
+                        if (testWordCount < 10) {
+                            setTimeout(startNewWord, 1000);
+                        }
+                    } else {
+                        setTimeout(startNewWord, 1000);
+                    }
+                } else {
+                    speakNextLetter();
+                }
+            } else {
+                if (!isTestMode) {
+                    if (currentAlphabet === germanAlphabet) {
+                        germanWrong++;
+                    } else {
+                        natoWrong++;
+                    }
+                }
+                event.target.value = '';
+            }
+            
+            updateScores();
+        }
+
+        function toggleHelp() {
+            const helpContent = document.getElementById('helpContent');
+            helpContent.classList.toggle('hidden');
+        }
+
+        function toggleMode() {
+            currentMode = currentMode === 'multipleChoice' ? 'dictation' : 'multipleChoice';
+            document.getElementById('multipleChoiceMode').classList.toggle('hidden', currentMode === 'dictation');
+            document.getElementById('dictationMode').classList.toggle('hidden', currentMode === 'multipleChoice');
+            
+            if (currentMode === 'dictation') {
+                startNewWord();
+            } else {
+                generateNewLetter();
+            }
+        }
+
+        function generateBirthDate() {
+            const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+            const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+            const year = String(1950 + Math.floor(Math.random() * 50));
+            return `${day}/${month}/${year}`;
+        }
+
+        function generateGPSCoordinates() {
+            // Generate coordinates roughly in Central Europe
+            const lat = (47 + Math.random() * 8).toFixed(6); // 47-55°N
+            const lon = (6 + Math.random() * 9).toFixed(6);  // 6-15°E
+            return `${lat}N ${lon}E`;
+        }
+
+        function generateWord() {
+            const includeDates = document.getElementById('includeDates').checked;
+            const includeCoords = document.getElementById('includeCoords').checked;
+            
+            // Always generate a name
+            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            let result = `${firstName} ${lastName}`;
+            
+            // Add birth date if selected
+            if (includeDates) {
+                result += ' ' + generateBirthDate();
+            }
+            
+            // Add coordinates if selected
+            if (includeCoords) {
+                result += ' ' + generateGPSCoordinates();
+            }
+            
+            return result;
+        }
+
+        function startNewWord() {
+            currentWord = generateWord();
+            currentLetterIndex = -1;
+            document.getElementById('currentWord').textContent = '_ '.repeat(currentWord.length);
+            document.getElementById('letterInput').value = '';
+            document.getElementById('letterInput').focus();
+        }
+
+        function toggleTestMode() {
+            isTestMode = document.getElementById('testMode').checked;
+            if (isTestMode) {
+                startNewTest();
+            } else {
+                document.getElementById('testModeStatus').classList.add('hidden');
+                document.getElementById('testResults').classList.add('hidden');
+                startNewWord();
+            }
+        }
+
+        function startNewTest() {
+            testWordCount = 0;
+            totalChars = 0;
+            correctChars = 0;
+            document.getElementById('testModeStatus').classList.remove('hidden');
+            document.getElementById('testResults').classList.add('hidden');
+            document.getElementById('currentWordCount').textContent = testWordCount;
+            startNewWord();
+        }
+
+        function updateTestStatus() {
+            document.getElementById('currentWordCount').textContent = testWordCount;
+            
+            if (testWordCount >= 10) {
+                // Show final results
+                const accuracy = (correctChars / totalChars * 100).toFixed(1);
+                document.getElementById('totalChars').textContent = totalChars;
+                document.getElementById('correctChars').textContent = correctChars;
+                document.getElementById('accuracy').textContent = accuracy;
+                document.getElementById('accuracyBar').style.width = `${accuracy}%`;
+                
+                document.getElementById('testResults').classList.remove('hidden');
+                document.getElementById('speakButton').disabled = true;
+                document.getElementById('letterInput').disabled = true;
+            }
+        }
+
+        function speakNextLetter() {
+            if (currentLetterIndex >= currentWord.length - 1) {
+                if (isTestMode) {
+                    testWordCount++;
+                    updateTestStatus();
+                    if (testWordCount < 10) {
+                        setTimeout(startNewWord, 1000);
+                    }
+                } else {
+                    startNewWord();
+                }
+                return;
+            }
+            
+            currentLetterIndex++;
+            const letter = currentWord[currentLetterIndex];
+            const isGerman = currentAlphabet === germanAlphabet;
+            
+            // Special handling for numbers and symbols
+            if (letter === ' ') {
+                const utterance = new SpeechSynthesisUtterance(isGerman ? 'neues wort' : 'space');
+                utterance.lang = isGerman ? 'de-DE' : 'en-US';
+                utterance.rate = 0.8;
+                speechSynth.speak(utterance);
+                return;
+            }
+            
+            if (letter === '/' || letter === '.') {
+                const word = letter === '/' 
+                    ? (isGerman ? 'schrägstrich' : 'slash')
+                    : (isGerman ? 'punkt' : 'point');
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = isGerman ? 'de-DE' : 'en-US';
+                utterance.rate = 0.8;
+                speechSynth.speak(utterance);
+                return;
+            }
+            
+            if (!isNaN(letter)) {
+                const utterance = new SpeechSynthesisUtterance(letter);
+                utterance.lang = isGerman ? 'de-DE' : 'en-US';
+                utterance.rate = 0.8;
+                speechSynth.speak(utterance);
+                return;
+            }
+            
+            const word = currentAlphabet[letter] || letter;
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = isGerman ? 'de-DE' : 'en-US';
+            utterance.rate = 0.8;
+            speechSynth.speak(utterance);
+        }
+
+        function checkLetter(event) {
+            if (currentLetterIndex === -1) return;
+            
+            const input = event.target.value.toUpperCase();
+            if (input === '') return;
+            
+            const correctLetter = currentWord[currentLetterIndex];
+            
+            if (isTestMode) {
+                totalChars++;
+                if (input === correctLetter) {
+                    correctChars++;
+                }
+            }
+            
+            if (input === correctLetter) {
+                if (currentAlphabet === germanAlphabet) {
+                    germanCorrect++;
+                } else {
+                    natoCorrect++;
+                }
+                
+                // Update word display
+                const wordDisplay = document.getElementById('currentWord');
+                const displayedWord = wordDisplay.textContent.split(' ');
+                displayedWord[currentLetterIndex] = correctLetter;
+                wordDisplay.textContent = displayedWord.join(' ');
+                
+                // Clear input and prepare for next letter
+                event.target.value = '';
+                
+                if (currentLetterIndex === currentWord.length - 1) {
+                    if (isTestMode) {
+                        testWordCount++;
+                        updateTestStatus();
+                        if (testWordCount < 10) {
+                            setTimeout(startNewWord, 1000);
+                        }
+                    } else {
+                        setTimeout(startNewWord, 1000);
+                    }
+                } else {
+                    speakNextLetter();
+                }
+            } else {
+                if (!isTestMode) {
+                    if (currentAlphabet === germanAlphabet) {
+                        germanWrong++;
+                    } else {
+                        natoWrong++;
+                    }
+                }
+                event.target.value = '';
+            }
+            
+            updateScores();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Initialize
+        generateNewLetter();
+    </script>
+</body>
+</html>
