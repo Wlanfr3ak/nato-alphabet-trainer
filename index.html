@@ -260,6 +260,11 @@ License: GNU General Public License v3.0
             border-color: var(--military-highlight);
             outline: none;
         }
+        .dictation-input.letter-input-wrong {
+            background-color: var(--incorrect-red) !important;
+            color: var(--military-text) !important;
+            transition: background-color 0.3s ease;
+        }
         .dictation-controls {
             display: flex;
             gap: 10px;
@@ -336,6 +341,25 @@ License: GNU General Public License v3.0
             background-color: var(--military-highlight);
             transition: width 0.3s ease;
         }
+        .word-display .wrong-letter {
+            color: var(--incorrect-red);
+            text-decoration: underline;
+            text-decoration-color: var(--incorrect-red);
+        }
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .speed-control input[type="range"] {
+            width: 150px;
+            accent-color: var(--military-highlight);
+        }
+        .speed-control label {
+            color: var(--military-text);
+            min-width: 60px;
+        }
     </style>
 </head>
 <body>
@@ -370,6 +394,7 @@ License: GNU General Public License v3.0
             </div>
             <div id="testModeStatus" class="test-mode-status hidden">
                 Word <span id="currentWordCount">0</span>/10
+                <button onclick="stopTestMode()" id="stopTestButton" class="hidden">Stop Test</button>
             </div>
             <div class="word-display" id="currentWord"></div>
             <div class="dictation-controls">
@@ -413,73 +438,33 @@ License: GNU General Public License v3.0
             </div>
         </div>
 
+        <div class="speed-control">
+            <label for="speechRate">Speed:</label>
+            <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="0.8">
+            <span id="speechRateValue">0.8x</span>
+        </div>
+
         <div class="help-content hidden" id="helpContent">
             <div>
                 <h2>🇬🇧 How to Use</h2>
-                <p>Welcome to the Radio Alphabet Trainer! This tool helps you learn and practice both NATO and German radio alphabets.</p>
                 <ul>
-                    <li><strong>Multiple Choice Mode:</strong>
-                        <ul>
-                            <li>Select the correct radio code word for each letter</li>
-                            <li>Instant feedback with color-coded responses</li>
-                        </ul>
-                    </li>
-                    <li><strong>Dictation Mode:</strong>
-                        <ul>
-                            <li>Listen to code words and type the corresponding letters</li>
-                            <li>Practice with names, birth dates, and GPS coordinates</li>
-                            <li>Test mode available for formal assessment (10 words)</li>
-                        </ul>
-                    </li>
-                    <li><strong>Options:</strong>
-                        <ul>
-                            <li>Switch between NATO and German alphabets by clicking score boxes</li>
-                            <li>Enable birth dates (DD/MM/YYYY) for additional practice</li>
-                            <li>Add GPS coordinates for location training</li>
-                            <li>Test mode for accuracy assessment</li>
-                        </ul>
-                    </li>
-                    <li><strong>Scoring:</strong>
-                        <ul>
-                            <li>Track correct and incorrect answers for each alphabet</li>
-                            <li>Percentage success rate for each alphabet</li>
-                            <li>Separate test mode scoring with detailed accuracy metrics</li>
-                        </ul>
-                    </li>
+                    <li><strong>Practice Mode:</strong> Type each letter as it's spoken. Incorrect entries will be highlighted, and you must enter the correct letter to proceed.</li>
+                    <li><strong>Test Mode:</strong> Complete 10 words as quickly as possible. Wrong letters are shown in red, but you continue to the next letter automatically.</li>
+                    <li><strong>Speech Speed:</strong> Adjust the voice speed using the slider (0.5x to 2x) for different training levels.</li>
+                    <li><strong>Word Options:</strong> Include dates and GPS coordinates for more challenging practice.</li>
+                    <li><strong>Language:</strong> Switch between NATO and German alphabets using the toggle button.</li>
+                    <li><strong>Scoring:</strong> Track your accuracy with correct/wrong counters for each alphabet.</li>
                 </ul>
             </div>
             <div>
                 <h2>🇩🇪 Bedienungsanleitung</h2>
-                <p>Willkommen beim Buchstabiertafel-Trainer! Dieses Tool hilft dir beim Lernen und Üben des NATO- und deutschen Buchstabieralphabets.</p>
                 <ul>
-                    <li><strong>Multiple-Choice-Modus:</strong>
-                        <ul>
-                            <li>Wähle das richtige Buchstabierwort für jeden Buchstaben</li>
-                            <li>Sofortiges Feedback mit farblicher Kennzeichnung</li>
-                        </ul>
-                    </li>
-                    <li><strong>Diktat-Modus:</strong>
-                        <ul>
-                            <li>Höre Buchstabierworte und tippe die entsprechenden Buchstaben</li>
-                            <li>Übe mit Namen, Geburtsdaten und GPS-Koordinaten</li>
-                            <li>Testmodus für formelle Bewertung (10 Wörter)</li>
-                        </ul>
-                    </li>
-                    <li><strong>Optionen:</strong>
-                        <ul>
-                            <li>Wechsel zwischen NATO- und deutschem Alphabet durch Klick auf Punkteboxen</li>
-                            <li>Aktiviere Geburtsdaten (TT/MM/JJJJ) für zusätzliches Training</li>
-                            <li>Füge GPS-Koordinaten für Standorttraining hinzu</li>
-                            <li>Testmodus für Genauigkeitsbewertung</li>
-                        </ul>
-                    </li>
-                    <li><strong>Punktewertung:</strong>
-                        <ul>
-                            <li>Verfolge richtige und falsche Antworten für jedes Alphabet</li>
-                            <li>Prozentuale Erfolgsquote für jedes Alphabet</li>
-                            <li>Separate Testmodus-Wertung mit detaillierten Genauigkeitsmetriken</li>
-                        </ul>
-                    </li>
+                    <li><strong>Übungsmodus:</strong> Tippen Sie jeden Buchstaben wie gesprochen. Falsche Eingaben werden markiert, und Sie müssen den richtigen Buchstaben eingeben, um fortzufahren.</li>
+                    <li><strong>Testmodus:</strong> Vervollständigen Sie 10 Wörter so schnell wie möglich. Falsche Buchstaben werden rot angezeigt, aber Sie fahren automatisch mit dem nächsten Buchstaben fort.</li>
+                    <li><strong>Sprechgeschwindigkeit:</strong> Passen Sie die Sprechgeschwindigkeit mit dem Schieberegler an (0,5x bis 2x) für verschiedene Übungsstufen.</li>
+                    <li><strong>Wortoptionen:</strong> Fügen Sie Daten und GPS-Koordinaten für anspruchsvollere Übungen hinzu.</li>
+                    <li><strong>Sprache:</strong> Wechseln Sie zwischen NATO- und deutschem Alphabet mit der Umschalttaste.</li>
+                    <li><strong>Punktezählung:</strong> Verfolgen Sie Ihre Genauigkeit mit Richtig/Falsch-Zählern für jedes Alphabet.</li>
                 </ul>
             </div>
         </div>
@@ -612,6 +597,15 @@ License: GNU General Public License v3.0
         let totalChars = 0;
         let correctChars = 0;
 
+        let wrongLetters = new Map(); // Store wrong letters and their positions
+
+        let speechRate = 0.8;
+
+        document.getElementById('speechRate').addEventListener('input', function(e) {
+            speechRate = parseFloat(e.target.value);
+            document.getElementById('speechRateValue').textContent = speechRate.toFixed(1) + 'x';
+        });
+
         function updateScores() {
             document.getElementById('germanCorrect').textContent = germanCorrect;
             document.getElementById('germanWrong').textContent = germanWrong;
@@ -732,7 +726,7 @@ License: GNU General Public License v3.0
                         testWordCount++;
                         updateTestStatus();
                         if (testWordCount < 10) {
-                            setTimeout(startNewWord, 1000);
+                            setTimeout(startNewWord, 300);
                         }
                     } else {
                         setTimeout(startNewWord, 1000);
@@ -810,20 +804,187 @@ License: GNU General Public License v3.0
         function startNewWord() {
             currentWord = generateWord();
             currentLetterIndex = -1;
-            document.getElementById('currentWord').textContent = '_ '.repeat(currentWord.length);
+            wrongLetters = new Map(); // Track wrong letters
+            // Update visualization to put space in the middle
+            const visualWord = currentWord.split('').map(char => char === ' ' ? '␣' : '_').join(' ');
+            document.getElementById('currentWord').textContent = visualWord;
             document.getElementById('letterInput').value = '';
             document.getElementById('letterInput').focus();
+            
+            if (isTestMode) {
+                // Clear any pending speech and start first letter
+                speechSynth.cancel();
+                setTimeout(() => {
+                    document.getElementById('letterInput').focus();
+                    speakNextLetter();
+                }, 100);
+            }
+        }
+
+        function checkLetter(event) {
+            if (currentLetterIndex === -1) return;
+            
+            const input = event.target.value.toUpperCase();
+            if (input === '') return;
+            
+            const correctLetter = currentWord[currentLetterIndex];
+            const inputField = document.getElementById('letterInput');
+            
+            if (isTestMode) {
+                totalChars++;
+                if (input === correctLetter) {
+                    correctChars++;
+                } else {
+                    // Store wrong letter
+                    wrongLetters.set(currentLetterIndex, input);
+                }
+                
+                // Update display and continue immediately
+                updateWordDisplay();
+                inputField.value = '';
+                
+                if (currentLetterIndex === currentWord.length - 1) {
+                    testWordCount++;
+                    updateTestStatus();
+                    if (testWordCount < 10) {
+                        setTimeout(startNewWord, 300);
+                    }
+                } else {
+                    // Move to next letter immediately
+                    currentLetterIndex++;
+                    // Clear any pending speech and start next letter
+                    speechSynth.cancel();
+                    setTimeout(speakNextLetter, 100);
+                }
+            } else {
+                // Practice mode behavior remains unchanged
+                if (input === correctLetter) {
+                    if (currentAlphabet === germanAlphabet) {
+                        germanCorrect++;
+                    } else {
+                        natoCorrect++;
+                    }
+                    updateWordDisplay();
+                    inputField.value = '';
+                    
+                    if (currentLetterIndex === currentWord.length - 1) {
+                        setTimeout(startNewWord, 1000);
+                    } else {
+                        currentLetterIndex++;
+                        setTimeout(speakNextLetter, 800);
+                    }
+                } else {
+                    if (currentAlphabet === germanAlphabet) {
+                        germanWrong++;
+                    } else {
+                        natoWrong++;
+                    }
+                    inputField.classList.add('letter-input-wrong');
+                    setTimeout(() => {
+                        inputField.classList.remove('letter-input-wrong');
+                    }, 200);
+                    inputField.value = '';
+                }
+            }
+            
+            updateScores();
+        }
+
+        function updateWordDisplay() {
+            const wordDisplay = document.getElementById('currentWord');
+            const displayedWord = Array(currentWord.length);
+            
+            for (let i = 0; i < currentWord.length; i++) {
+                if (i > currentLetterIndex) {
+                    displayedWord[i] = '_';
+                } else if (wrongLetters.has(i)) {
+                    const span = document.createElement('span');
+                    span.className = 'wrong-letter';
+                    span.textContent = wrongLetters.get(i);
+                    displayedWord[i] = span.outerHTML;
+                } else {
+                    displayedWord[i] = currentWord[i] === ' ' ? '␣' : currentWord[i];
+                }
+            }
+            
+            wordDisplay.innerHTML = displayedWord.join(' ');
+        }
+
+        function speakNextLetter() {
+            if (currentLetterIndex >= currentWord.length - 1 && currentLetterIndex !== -1) {
+                if (isTestMode) {
+                    testWordCount++;
+                    updateTestStatus();
+                    if (testWordCount < 10) {
+                        setTimeout(startNewWord, 300);
+                    }
+                } else {
+                    startNewWord();
+                }
+                return;
+            }
+            
+            if (currentLetterIndex === -1) {
+                currentLetterIndex = 0;
+            }
+            
+            const letter = currentWord[currentLetterIndex];
+            const isGerman = currentAlphabet === germanAlphabet;
+            
+            // Special handling for numbers and symbols
+            if (letter === ' ') {
+                const utterance = new SpeechSynthesisUtterance(isGerman ? 'neues wort' : 'space');
+                utterance.lang = isGerman ? 'de-DE' : 'en-US';
+                utterance.rate = speechRate;
+                speechSynth.speak(utterance);
+                return;
+            }
+            
+            if (letter === '/' || letter === '.') {
+                const word = letter === '/' 
+                    ? (isGerman ? 'schrägstrich' : 'slash')
+                    : (isGerman ? 'punkt' : 'point');
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = isGerman ? 'de-DE' : 'en-US';
+                utterance.rate = speechRate;
+                speechSynth.speak(utterance);
+                return;
+            }
+            
+            if (!isNaN(letter)) {
+                const utterance = new SpeechSynthesisUtterance(letter);
+                utterance.lang = isGerman ? 'de-DE' : 'en-US';
+                utterance.rate = speechRate;
+                speechSynth.speak(utterance);
+                return;
+            }
+            
+            const word = currentAlphabet[letter] || letter;
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = isGerman ? 'de-DE' : 'en-US';
+            utterance.rate = speechRate;
+            speechSynth.speak(utterance);
         }
 
         function toggleTestMode() {
             isTestMode = document.getElementById('testMode').checked;
             if (isTestMode) {
                 startNewTest();
+                document.getElementById('stopTestButton').classList.remove('hidden');
+                document.getElementById('speakButton').classList.add('hidden');
             } else {
-                document.getElementById('testModeStatus').classList.add('hidden');
-                document.getElementById('testResults').classList.add('hidden');
-                startNewWord();
+                stopTestMode();
             }
+        }
+
+        function stopTestMode() {
+            isTestMode = false;
+            document.getElementById('testMode').checked = false;
+            document.getElementById('testModeStatus').classList.add('hidden');
+            document.getElementById('testResults').classList.add('hidden');
+            document.getElementById('stopTestButton').classList.add('hidden');
+            document.getElementById('speakButton').classList.remove('hidden');
+            startNewWord();
         }
 
         function startNewTest() {
@@ -833,7 +994,7 @@ License: GNU General Public License v3.0
             document.getElementById('testModeStatus').classList.remove('hidden');
             document.getElementById('testResults').classList.add('hidden');
             document.getElementById('currentWordCount').textContent = testWordCount;
-            startNewWord();
+            startNewWord(); // This will now automatically start speaking in test mode
         }
 
         function updateTestStatus() {
@@ -851,117 +1012,6 @@ License: GNU General Public License v3.0
                 document.getElementById('speakButton').disabled = true;
                 document.getElementById('letterInput').disabled = true;
             }
-        }
-
-        function speakNextLetter() {
-            if (currentLetterIndex >= currentWord.length - 1) {
-                if (isTestMode) {
-                    testWordCount++;
-                    updateTestStatus();
-                    if (testWordCount < 10) {
-                        setTimeout(startNewWord, 1000);
-                    }
-                } else {
-                    startNewWord();
-                }
-                return;
-            }
-            
-            currentLetterIndex++;
-            const letter = currentWord[currentLetterIndex];
-            const isGerman = currentAlphabet === germanAlphabet;
-            
-            // Special handling for numbers and symbols
-            if (letter === ' ') {
-                const utterance = new SpeechSynthesisUtterance(isGerman ? 'neues wort' : 'space');
-                utterance.lang = isGerman ? 'de-DE' : 'en-US';
-                utterance.rate = 0.8;
-                speechSynth.speak(utterance);
-                return;
-            }
-            
-            if (letter === '/' || letter === '.') {
-                const word = letter === '/' 
-                    ? (isGerman ? 'schrägstrich' : 'slash')
-                    : (isGerman ? 'punkt' : 'point');
-                const utterance = new SpeechSynthesisUtterance(word);
-                utterance.lang = isGerman ? 'de-DE' : 'en-US';
-                utterance.rate = 0.8;
-                speechSynth.speak(utterance);
-                return;
-            }
-            
-            if (!isNaN(letter)) {
-                const utterance = new SpeechSynthesisUtterance(letter);
-                utterance.lang = isGerman ? 'de-DE' : 'en-US';
-                utterance.rate = 0.8;
-                speechSynth.speak(utterance);
-                return;
-            }
-            
-            const word = currentAlphabet[letter] || letter;
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = isGerman ? 'de-DE' : 'en-US';
-            utterance.rate = 0.8;
-            speechSynth.speak(utterance);
-        }
-
-        function checkLetter(event) {
-            if (currentLetterIndex === -1) return;
-            
-            const input = event.target.value.toUpperCase();
-            if (input === '') return;
-            
-            const correctLetter = currentWord[currentLetterIndex];
-            
-            if (isTestMode) {
-                totalChars++;
-                if (input === correctLetter) {
-                    correctChars++;
-                }
-            }
-            
-            if (input === correctLetter) {
-                if (currentAlphabet === germanAlphabet) {
-                    germanCorrect++;
-                } else {
-                    natoCorrect++;
-                }
-                
-                // Update word display
-                const wordDisplay = document.getElementById('currentWord');
-                const displayedWord = wordDisplay.textContent.split(' ');
-                displayedWord[currentLetterIndex] = correctLetter;
-                wordDisplay.textContent = displayedWord.join(' ');
-                
-                // Clear input and prepare for next letter
-                event.target.value = '';
-                
-                if (currentLetterIndex === currentWord.length - 1) {
-                    if (isTestMode) {
-                        testWordCount++;
-                        updateTestStatus();
-                        if (testWordCount < 10) {
-                            setTimeout(startNewWord, 1000);
-                        }
-                    } else {
-                        setTimeout(startNewWord, 1000);
-                    }
-                } else {
-                    speakNextLetter();
-                }
-            } else {
-                if (!isTestMode) {
-                    if (currentAlphabet === germanAlphabet) {
-                        germanWrong++;
-                    } else {
-                        natoWrong++;
-                    }
-                }
-                event.target.value = '';
-            }
-            
-            updateScores();
         }
 
         function shuffleArray(array) {
