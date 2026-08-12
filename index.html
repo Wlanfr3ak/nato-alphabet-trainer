@@ -360,68 +360,105 @@ License: GNU General Public License v3.0
             color: var(--military-text);
             min-width: 60px;
         }
+        .lang-switcher {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: auto;
+        }
+        .lang-btn {
+            background: var(--military-dark);
+            border: 2px solid var(--military-border);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            opacity: 0.5;
+            transition: opacity 0.2s, border-color 0.2s;
+            color: var(--military-text);
+        }
+        .lang-btn.active {
+            opacity: 1;
+            border-color: var(--military-highlight);
+        }
+        .lang-btn:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Radio Alphabet Trainer</h1>
+        <h1 id="appTitle">Radio Alphabet Trainer</h1>
         
         <div class="controls">
-            <button onclick="generateNewLetter()">New Letter</button>
-            <button onclick="toggleMode()">Switch Mode</button>
-            <button onclick="toggleHelp()">Help / Hilfe</button>
+            <button onclick="toggleMode()" id="switchModeBtn">Switch Mode</button>
+            <button onclick="toggleHelp()" id="helpBtn">Help</button>
+            <div class="lang-switcher">
+                <button onclick="setLanguage('en')" id="langEnBtn" class="lang-btn active" title="English">EN</button>
+                <button onclick="setLanguage('de')" id="langDeBtn" class="lang-btn" title="Deutsch">DE</button>
+            </div>
         </div>
 
         <div class="display" id="multipleChoiceMode">
             <div class="letter" id="currentLetter"></div>
             <div class="multiple-choice" id="multipleChoice"></div>
+            <button onclick="generateNewLetter()" id="newLetterButton" data-i18n="newLetter">New Letter</button>
         </div>
 
         <div class="dictation-mode hidden" id="dictationMode">
             <div class="dictation-options">
                 <div class="option-group">
+                    <input type="checkbox" id="includeNames" onchange="startNewWord()" checked>
+                    <label for="includeNames" data-i18n="includeNames">Include Names</label>
+                </div>
+                <div class="option-group">
                     <input type="checkbox" id="includeDates" onchange="startNewWord()">
-                    <label for="includeDates">Include Birth Dates</label>
+                    <label for="includeDates" data-i18n="includeDates">Include Birth Dates</label>
                 </div>
                 <div class="option-group">
                     <input type="checkbox" id="includeCoords" onchange="startNewWord()">
-                    <label for="includeCoords">Include GPS Coordinates</label>
+                    <label for="includeCoords" data-i18n="includeCoords">Include GPS Coordinates</label>
+                </div>
+                <div class="option-group">
+                    <input type="checkbox" id="includePlates" onchange="startNewWord()">
+                    <label for="includePlates" data-i18n="includePlates">German License Plates</label>
                 </div>
                 <div class="option-group">
                     <input type="checkbox" id="testMode" onchange="toggleTestMode()">
-                    <label for="testMode">Test Mode (10 Words)</label>
+                    <label for="testMode" data-i18n="testMode">Test Mode (10 Words)</label>
                 </div>
             </div>
             <div id="testModeStatus" class="test-mode-status hidden">
-                Word <span id="currentWordCount">0</span>/10
-                <button onclick="stopTestMode()" id="stopTestButton" class="hidden">Stop Test</button>
+                <span data-i18n="word">Word</span> <span id="currentWordCount">0</span>/10
+                <button onclick="stopTestMode()" id="stopTestButton" class="hidden" data-i18n="stopTest">Stop Test</button>
             </div>
             <div class="word-display" id="currentWord"></div>
             <div class="dictation-controls">
-                <button onclick="speakNextLetter()" id="speakButton">Speak Next Letter</button>
+                <button onclick="speakNextLetter()" id="speakButton" data-i18n="speakNext">Speak Next Letter</button>
                 <input type="text" 
                        class="dictation-input" 
                        id="letterInput" 
                        maxlength="1" 
-                       placeholder="Type letter"
+                       data-i18n-placeholder="typeLetter"
                        onkeyup="checkLetter(event)">
             </div>
             <div id="testResults" class="test-results hidden">
-                <h3>Test Results</h3>
-                <div>Total Characters: <span id="totalChars">0</span></div>
-                <div>Correct Characters: <span id="correctChars">0</span></div>
-                <div>Accuracy: <span id="accuracy">0</span>%</div>
+                <h3 data-i18n="testResults">Test Results</h3>
+                <div><span data-i18n="totalChars">Total Characters:</span> <span id="totalChars">0</span></div>
+                <div><span data-i18n="correctChars">Correct Characters:</span> <span id="correctChars">0</span></div>
+                <div><span data-i18n="accuracy">Accuracy:</span> <span id="accuracy">0</span>%</div>
                 <div class="accuracy-bar">
                     <div class="accuracy-fill" id="accuracyBar" style="width: 0%"></div>
                 </div>
-                <button onclick="startNewTest()" style="margin-top: 10px">Start New Test</button>
+                <button onclick="startNewTest()" style="margin-top: 10px" data-i18n="startNewTest">Start New Test</button>
             </div>
         </div>
 
         <div class="scores">
-            <button onclick="resetScores()" class="reset-button">Reset Scores</button>
+            <button onclick="resetScores()" class="reset-button" id="resetScoresBtn" data-i18n="resetScores">Reset Scores</button>
             <div class="score-item" id="germanScoreBox" onclick="switchToGerman()">
-                <div class="score-label">🇩🇪 German Score</div>
+                <div class="score-label" id="germanScoreLabel">German Score</div>
                 <div class="score-details">
                     <span class="correct">✓ <span id="germanCorrect">0</span></span>
                     <span class="incorrect">✗ <span id="germanWrong">0</span></span>
@@ -439,31 +476,37 @@ License: GNU General Public License v3.0
         </div>
 
         <div class="speed-control">
-            <label for="speechRate">Speed:</label>
+            <label for="speechRate" id="speedLabel">Speed:</label>
             <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="0.8">
             <span id="speechRateValue">0.8x</span>
         </div>
 
         <div class="help-content hidden" id="helpContent">
-            <div>
-                <h2>🇬🇧 How to Use</h2>
+            <div id="helpEn">
+                <h2>How to Use</h2>
                 <ul>
-                    <li><strong>Practice Mode:</strong> Type each letter as it's spoken. Incorrect entries will be highlighted, and you must enter the correct letter to proceed.</li>
+                    <li><strong>Multiple Choice Mode:</strong> A letter is displayed and four answer options are shown. Click the correct NATO or German code word. The next letter appears automatically after 1 second.</li>
+                    <li><strong>Dictation Mode:</strong> Each letter is spoken aloud. Type the letter you hear. In practice mode, incorrect entries are highlighted and you must enter the correct letter to proceed.</li>
                     <li><strong>Test Mode:</strong> Complete 10 words as quickly as possible. Wrong letters are shown in red, but you continue to the next letter automatically.</li>
                     <li><strong>Speech Speed:</strong> Adjust the voice speed using the slider (0.5x to 2x) for different training levels.</li>
-                    <li><strong>Word Options:</strong> Include dates and GPS coordinates for more challenging practice.</li>
-                    <li><strong>Language:</strong> Switch between NATO and German alphabets using the toggle button.</li>
+                    <li><strong>Word Options:</strong> Toggle names, birth dates (DD.MM.YYYY), GPS coordinates, and German license plates for varied practice. Disable names to practice only specific content.</li>
+                    <li><strong>German License Plates:</strong> Real German district codes with proper syntax, including special government plates (BD, BP, BT, THW, Y, Z).</li>
+                    <li><strong>Alphabets:</strong> Switch between NATO and German alphabets by clicking the score boxes.</li>
+                    <li><strong>Language:</strong> Switch the UI language between English and German using the EN/DE buttons.</li>
                     <li><strong>Scoring:</strong> Track your accuracy with correct/wrong counters for each alphabet.</li>
                 </ul>
             </div>
-            <div>
-                <h2>🇩🇪 Bedienungsanleitung</h2>
+            <div id="helpDe" class="hidden">
+                <h2>Bedienungsanleitung</h2>
                 <ul>
-                    <li><strong>Übungsmodus:</strong> Tippen Sie jeden Buchstaben wie gesprochen. Falsche Eingaben werden markiert, und Sie müssen den richtigen Buchstaben eingeben, um fortzufahren.</li>
+                    <li><strong>Multiple-Choice-Modus:</strong> Ein Buchstabe wird angezeigt und vier Antwortmöglichkeiten werden gezeigt. Klicken Sie das richtige NATO- oder deutsche Buchstabierwort. Der nächste Buchstabe erscheint automatisch nach 1 Sekunde.</li>
+                    <li><strong>Diktatmodus:</strong> Jeder Buchstabe wird angesagt. Tippen Sie den gehörten Buchstaben. Im Übungsmodus werden falsche Eingaben markiert und Sie müssen den richtigen Buchstaben eingeben, um fortzufahren.</li>
                     <li><strong>Testmodus:</strong> Vervollständigen Sie 10 Wörter so schnell wie möglich. Falsche Buchstaben werden rot angezeigt, aber Sie fahren automatisch mit dem nächsten Buchstaben fort.</li>
                     <li><strong>Sprechgeschwindigkeit:</strong> Passen Sie die Sprechgeschwindigkeit mit dem Schieberegler an (0,5x bis 2x) für verschiedene Übungsstufen.</li>
-                    <li><strong>Wortoptionen:</strong> Fügen Sie Daten und GPS-Koordinaten für anspruchsvollere Übungen hinzu.</li>
-                    <li><strong>Sprache:</strong> Wechseln Sie zwischen NATO- und deutschem Alphabet mit der Umschalttaste.</li>
+                    <li><strong>Wortoptionen:</strong> Namen, Geburtsdaten (TT.MM.JJJJ), GPS-Koordinaten und deutsche Kfz-Kennzeichen einzeln aktivierbar. Namen deaktivieren, um nur bestimmte Inhalte zu üben.</li>
+                    <li><strong>Deutsche Kfz-Kennzeichen:</strong> Echte deutsche Unterscheidungszeichen mit korrekter Syntax, inklusive behördlicher Sonderkennzeichen (BD, BP, BT, THW, Y, Z).</li>
+                    <li><strong>Alphabete:</strong> Wechseln Sie zwischen NATO- und deutschem Alphabet durch Klick auf die Punktefelder.</li>
+                    <li><strong>Sprache:</strong> Schalten Sie die Oberflächensprache zwischen Englisch und Deutsch mit den EN/DE-Buttons um.</li>
                     <li><strong>Punktezählung:</strong> Verfolgen Sie Ihre Genauigkeit mit Richtig/Falsch-Zählern für jedes Alphabet.</li>
                 </ul>
             </div>
@@ -471,11 +514,90 @@ License: GNU General Public License v3.0
 
         <div class="license">
             <p><a href="https://github.com/Wlanfr3ak/nato-alphabet-trainer">https://github.com/Wlanfr3ak/nato-alphabet-trainer</a><br>
-            Licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GNU General Public License v3.0</a></p>
+            <span data-i18n="licensedUnder">Licensed under</span> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GNU General Public License v3.0</a></p>
         </div>
     </div>
 
     <script>
+        const i18n = {
+            en: {
+                appTitle: 'Radio Alphabet Trainer',
+                switchMode: 'Switch Mode',
+                help: 'Help',
+                newLetter: 'New Letter',
+                includeNames: 'Include Names',
+                includeDates: 'Include Birth Dates',
+                includeCoords: 'Include GPS Coordinates',
+                includePlates: 'German License Plates',
+                testMode: 'Test Mode (10 Words)',
+                word: 'Word',
+                stopTest: 'Stop Test',
+                speakNext: 'Speak Next Letter',
+                typeLetter: 'Type letter',
+                testResults: 'Test Results',
+                totalChars: 'Total Characters:',
+                correctChars: 'Correct Characters:',
+                accuracy: 'Accuracy:',
+                startNewTest: 'Start New Test',
+                resetScores: 'Reset Scores',
+                germanScore: 'German Score',
+                speed: 'Speed:',
+                licensedUnder: 'Licensed under'
+            },
+            de: {
+                appTitle: 'Funkalphabet-Trainer',
+                switchMode: 'Modus wechseln',
+                help: 'Hilfe',
+                newLetter: 'Neuer Buchstabe',
+                includeNames: 'Namen einbeziehen',
+                includeDates: 'Geburtsdaten einbeziehen',
+                includeCoords: 'GPS-Koordinaten einbeziehen',
+                includePlates: 'Deutsche Kfz-Kennzeichen',
+                testMode: 'Testmodus (10 Wörter)',
+                word: 'Wort',
+                stopTest: 'Test stoppen',
+                speakNext: 'Nächsten Buchstaben sprechen',
+                typeLetter: 'Buchstabe eingeben',
+                testResults: 'Testergebnisse',
+                totalChars: 'Gesamtzeichen:',
+                correctChars: 'Richtige Zeichen:',
+                accuracy: 'Genauigkeit:',
+                startNewTest: 'Neuen Test starten',
+                resetScores: 'Punkte zurücksetzen',
+                germanScore: 'Deutsche Punkte',
+                speed: 'Geschwindigkeit:',
+                licensedUnder: 'Lizenziert unter'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = i18n[lang];
+
+            document.getElementById('appTitle').textContent = t.appTitle;
+            document.getElementById('switchModeBtn').textContent = t.switchMode;
+            document.getElementById('helpBtn').textContent = t.help;
+            document.getElementById('germanScoreLabel').textContent = t.germanScore;
+            document.getElementById('speedLabel').textContent = t.speed;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.textContent = t[key];
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (t[key]) el.placeholder = t[key];
+            });
+
+            document.getElementById('langEnBtn').classList.toggle('active', lang === 'en');
+            document.getElementById('langDeBtn').classList.toggle('active', lang === 'de');
+
+            document.getElementById('helpEn').classList.toggle('hidden', lang !== 'en');
+            document.getElementById('helpDe').classList.toggle('hidden', lang !== 'de');
+        }
         const natoAlphabet = {
             'A': 'Alpha', 'B': 'Bravo', 'C': 'Charlie', 'D': 'Delta', 'E': 'Echo',
             'F': 'Foxtrot', 'G': 'Golf', 'H': 'Hotel', 'I': 'India', 'J': 'Juliet',
@@ -711,41 +833,18 @@ License: GNU General Public License v3.0
                 } else {
                     natoCorrect++;
                 }
-                
-                // Update word display
-                const wordDisplay = document.getElementById('currentWord');
-                const displayedWord = wordDisplay.textContent.split(' ');
-                displayedWord[currentLetterIndex] = correctLetter;
-                wordDisplay.textContent = displayedWord.join(' ');
-                
-                // Clear input and prepare for next letter
-                event.target.value = '';
-                
-                if (currentLetterIndex === currentWord.length - 1) {
-                    if (isTestMode) {
-                        testWordCount++;
-                        updateTestStatus();
-                        if (testWordCount < 10) {
-                            setTimeout(startNewWord, 300);
-                        }
-                    } else {
-                        setTimeout(startNewWord, 1000);
-                    }
-                } else {
-                    speakNextLetter();
-                }
             } else {
-                if (!isTestMode) {
-                    if (currentAlphabet === germanAlphabet) {
-                        germanWrong++;
-                    } else {
-                        natoWrong++;
-                    }
+                if (currentAlphabet === germanAlphabet) {
+                    germanWrong++;
+                } else {
+                    natoWrong++;
                 }
-                event.target.value = '';
             }
             
             updateScores();
+
+            // Auto-advance to next letter after 1 second
+            setTimeout(generateNewLetter, 1000);
         }
 
         function toggleHelp() {
@@ -769,7 +868,7 @@ License: GNU General Public License v3.0
             const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
             const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
             const year = String(1950 + Math.floor(Math.random() * 50));
-            return `${day}/${month}/${year}`;
+            return `${day}.${month}.${year}`;
         }
 
         function generateGPSCoordinates() {
@@ -780,25 +879,98 @@ License: GNU General Public License v3.0
         }
 
         function generateWord() {
+            const includeNames = document.getElementById('includeNames').checked;
             const includeDates = document.getElementById('includeDates').checked;
             const includeCoords = document.getElementById('includeCoords').checked;
+            const includePlates = document.getElementById('includePlates').checked;
             
-            // Always generate a name
-            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-            let result = `${firstName} ${lastName}`;
+            let result = '';
+            
+            // Generate name if selected
+            if (includeNames) {
+                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                result = `${firstName} ${lastName}`;
+            }
             
             // Add birth date if selected
             if (includeDates) {
-                result += ' ' + generateBirthDate();
+                result += (result ? ' ' : '') + generateBirthDate();
             }
             
             // Add coordinates if selected
             if (includeCoords) {
-                result += ' ' + generateGPSCoordinates();
+                result += (result ? ' ' : '') + generateGPSCoordinates();
+            }
+            
+            // Add license plate if selected
+            if (includePlates) {
+                result += (result ? ' ' : '') + generateLicensePlate();
+            }
+            
+            // Fallback if nothing selected
+            if (!result) {
+                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                result = `${firstName} ${lastName}`;
             }
             
             return result;
+        }
+
+        const germanPlateDistricts = [
+            'A','AB','AC','AE','AH','AIC','AK','AL','AM','AN','AÖ','AS','AST','AT','AU','AW','AZ','B','BA','BAD','BB','BCH','BCS','BD','BGL','BI','BIR','BIT','BK','BKS','BLB','BLK','BM','BN','BO','BÖ','BOR','BOT','BP','BR','BRG','BRL','BS','BTF','BT','BÜZ','C','CA','CB','CE','CHA','CO','COC','COE','CR','CS','CU','CW','D','DA','DAH','DAN','DB','DD','DE','DEG','DEL','DGF','DH','DL','DLG','DM','DN','DO','DON','DU','DW','DZ','E','EA','EB','EBE','EBN','ECK','ED','EE','EF','EG','EIC','EI','EIN','EIS','EL','EM','EMD','EMS','EN','ER','ERB','ERH','ERZ','ES','ESW','EU','EW','F','FB','FD','FDS','FFB','FG','FK','FL','FLO','FN','FOR','FR','FRG','FRI','FRW','FS','FT','FTL','FÜ','G','GA','GAP','GB','GD','GE','GEO','GER','GHA','GHC','GI','GL','GLA','GM','GN','GÖ','GOT','GP','GR','GRH','GRZ','GTH','GUB','GUN','GVM','H','HA','HAB','HAL','HAM','HAS','HB','HBN','HBS','HD','HDL','HE','HEF','HEI','HER','HF','HG','HGN','HGW','HH','HHM','HHS','HI','HIG','HK','HKF','HL','HM','HMB','HMÜ','HN','HO','HOG','HOL','HOM','HOS','HP','HR','HRO','HS','HSK','HST','HU','HUN','HV','HWI','HX','HY','IGB','IL','IN','INI','J','JL','K','KA','KB','KC','KE','KEH','KF','KG','KH','KI','KIB','KK','KL','KLE','KLZ','KM','KN','KO','KÖ','KÖL','KÖT','KR','KS','KT','KU','KUS','KW','KYF','L','LA','LAL','LAN','LAU','LB','LBZ','LD','LDK','LEO','LER','LEV','LF','LHÖ','LI','LIB','LIF','LIP','LK','LL','LM','LÖ','LRO','LSA','LSZ','LU','LUN','LWL','M','MA','MB','MD','ME','MEG','MEI','MG','MGN','MH','MIL','MK','ML','MM','MN','MO','MOD','MOL','MON','MS','MSH','MSP','MTK','MTL','MÜ','MÜL','MÜN','N','NA','NB','ND','NE','NEA','NEB','NEC','NF','NMB','NO','NOM','NOR','NP','NR','NRA','NRW','NT','NU','OA','OB','OBG','OCH','OE','OHA','OHC','OHV','OHZ','OK','OL','OPF','OS','OSL','P','PA','PAF','PAN','PB','PCH','PE','PEF','PF','PFB','PI','PIR','PL','PLÖ','PM','PN','PRÜ','PS','Q','QB','QC','QLB','R','RA','RC','RD','RE','REG','REL','REV','RH','RI','RID','RL','RM','RN','RO','ROW','RS','RT','RÜ','RV','RW','RZ','S','SB','SCZ','SDH','SE','SEB','SEE','SEL','SI','SIG','SK','SL','SLF','SLK','SLN','SLS','SN','SO','SÖM','SOK','SON','SP','SPN','SR','SRB','SRO','ST','STA','STD','STL','SUL','SU','SW','SWP','TBB','TDO','TET','TF','TG','THW','TIR','TO','TÖL','TR','TS','TÜ','UE','UH','UL','UM','UN','V','VB','VEC','VER','VG','VK','VL','VR','VS','W','WAF','WAK','WAN','WAT','WBS','WDA','WEN','WES','WF','WHV','WI','WIL','WIS','WIT','WLN','WM','WMS','WND','WOB','WST','WT','WTM','WÜ','WUG','WUN','X','Y','Z'
+        ];
+
+        // Special government plate prefixes with their own format rules
+        const germanSpecialPlates = [
+            { prefix: 'BD', minMid: 1, maxMid: 2, minDigits: 1, maxDigits: 4 },  // Bund
+            { prefix: 'BP', minMid: 1, maxMid: 2, minDigits: 1, maxDigits: 4 },  // Bundespolizei
+            { prefix: 'BT', minMid: 1, maxMid: 2, minDigits: 1, maxDigits: 4 },  // Bundestag
+            { prefix: 'THW', minMid: 1, maxMid: 2, minDigits: 1, maxDigits: 4 }, // Technisches Hilfswerk
+            { prefix: 'Y', minMid: 0, maxMid: 2, minDigits: 1, maxDigits: 5 },   // Bundeswehr (military)
+            { prefix: 'Z', minMid: 1, maxMid: 2, minDigits: 1, maxDigits: 4 },   // Zoll (customs)
+        ];
+
+        function generateLicensePlate() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const useSpecial = Math.random() < 0.2;
+
+            let prefix, minMid, maxMid, minDigits, maxDigits;
+
+            if (useSpecial) {
+                const spec = germanSpecialPlates[Math.floor(Math.random() * germanSpecialPlates.length)];
+                prefix = spec.prefix;
+                minMid = spec.minMid;
+                maxMid = spec.maxMid;
+                minDigits = spec.minDigits;
+                maxDigits = spec.maxDigits;
+            } else {
+                prefix = germanPlateDistricts[Math.floor(Math.random() * germanPlateDistricts.length)];
+                minMid = 1;
+                maxMid = 2;
+                minDigits = 1;
+                maxDigits = 4;
+            }
+
+            // Middle part
+            const middleLen = minMid + Math.floor(Math.random() * (maxMid - minMid + 1));
+            let middle = '';
+            for (let i = 0; i < middleLen; i++) {
+                middle += letters[Math.floor(Math.random() * letters.length)];
+            }
+
+            // Digits
+            const digitCount = minDigits + Math.floor(Math.random() * (maxDigits - minDigits + 1));
+            const maxNum = Math.pow(10, digitCount) - 1;
+            const digits = String(Math.floor(Math.random() * (maxNum + 1))).padStart(digitCount, '0');
+
+            // Build plate: prefix[-middle-]digits (middle may be empty for Y plates)
+            if (middle) {
+                return `${prefix}-${middle}-${digits}`;
+            } else {
+                return `${prefix}-${digits}`;
+            }
         }
 
         function startNewWord() {
@@ -811,14 +983,12 @@ License: GNU General Public License v3.0
             document.getElementById('letterInput').value = '';
             document.getElementById('letterInput').focus();
             
-            if (isTestMode) {
-                // Clear any pending speech and start first letter
-                speechSynth.cancel();
-                setTimeout(() => {
-                    document.getElementById('letterInput').focus();
-                    speakNextLetter();
-                }, 100);
-            }
+            // Clear any pending speech and start first letter
+            speechSynth.cancel();
+            setTimeout(() => {
+                document.getElementById('letterInput').focus();
+                speakNextLetter();
+            }, 50);
         }
 
         function checkLetter(event) {
@@ -854,10 +1024,10 @@ License: GNU General Public License v3.0
                     currentLetterIndex++;
                     // Clear any pending speech and start next letter
                     speechSynth.cancel();
-                    setTimeout(speakNextLetter, 100);
+                    speakNextLetter();
                 }
             } else {
-                // Practice mode behavior remains unchanged
+                // Practice mode
                 if (input === correctLetter) {
                     if (currentAlphabet === germanAlphabet) {
                         germanCorrect++;
@@ -868,10 +1038,11 @@ License: GNU General Public License v3.0
                     inputField.value = '';
                     
                     if (currentLetterIndex === currentWord.length - 1) {
-                        setTimeout(startNewWord, 1000);
+                        setTimeout(startNewWord, 500);
                     } else {
                         currentLetterIndex++;
-                        setTimeout(speakNextLetter, 800);
+                        speechSynth.cancel();
+                        speakNextLetter();
                     }
                 } else {
                     if (currentAlphabet === germanAlphabet) {
@@ -884,6 +1055,9 @@ License: GNU General Public License v3.0
                         inputField.classList.remove('letter-input-wrong');
                     }, 200);
                     inputField.value = '';
+                    // Stop current speech and repeat the same letter
+                    speechSynth.cancel();
+                    speakNextLetter();
                 }
             }
             
@@ -911,7 +1085,7 @@ License: GNU General Public License v3.0
         }
 
         function speakNextLetter() {
-            if (currentLetterIndex >= currentWord.length - 1 && currentLetterIndex !== -1) {
+            if (currentLetterIndex > currentWord.length - 1 && currentLetterIndex !== -1) {
                 if (isTestMode) {
                     testWordCount++;
                     updateTestStatus();
@@ -936,17 +1110,21 @@ License: GNU General Public License v3.0
                 const utterance = new SpeechSynthesisUtterance(isGerman ? 'neues wort' : 'space');
                 utterance.lang = isGerman ? 'de-DE' : 'en-US';
                 utterance.rate = speechRate;
+                speechSynth.cancel();
                 speechSynth.speak(utterance);
                 return;
             }
             
-            if (letter === '/' || letter === '.') {
+            if (letter === '/' || letter === '.' || letter === '-') {
                 const word = letter === '/' 
                     ? (isGerman ? 'schrägstrich' : 'slash')
-                    : (isGerman ? 'punkt' : 'point');
+                    : letter === '.'
+                    ? (isGerman ? 'punkt' : 'point')
+                    : (isGerman ? 'strich' : 'dash');
                 const utterance = new SpeechSynthesisUtterance(word);
                 utterance.lang = isGerman ? 'de-DE' : 'en-US';
                 utterance.rate = speechRate;
+                speechSynth.cancel();
                 speechSynth.speak(utterance);
                 return;
             }
@@ -955,6 +1133,7 @@ License: GNU General Public License v3.0
                 const utterance = new SpeechSynthesisUtterance(letter);
                 utterance.lang = isGerman ? 'de-DE' : 'en-US';
                 utterance.rate = speechRate;
+                speechSynth.cancel();
                 speechSynth.speak(utterance);
                 return;
             }
@@ -963,6 +1142,7 @@ License: GNU General Public License v3.0
             const utterance = new SpeechSynthesisUtterance(word);
             utterance.lang = isGerman ? 'de-DE' : 'en-US';
             utterance.rate = speechRate;
+            speechSynth.cancel();
             speechSynth.speak(utterance);
         }
 
@@ -984,6 +1164,8 @@ License: GNU General Public License v3.0
             document.getElementById('testResults').classList.add('hidden');
             document.getElementById('stopTestButton').classList.add('hidden');
             document.getElementById('speakButton').classList.remove('hidden');
+            document.getElementById('speakButton').disabled = false;
+            document.getElementById('letterInput').disabled = false;
             startNewWord();
         }
 
@@ -994,7 +1176,9 @@ License: GNU General Public License v3.0
             document.getElementById('testModeStatus').classList.remove('hidden');
             document.getElementById('testResults').classList.add('hidden');
             document.getElementById('currentWordCount').textContent = testWordCount;
-            startNewWord(); // This will now automatically start speaking in test mode
+            document.getElementById('speakButton').disabled = false;
+            document.getElementById('letterInput').disabled = false;
+            startNewWord();
         }
 
         function updateTestStatus() {
