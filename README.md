@@ -1,33 +1,43 @@
-# Radio Alphabet Trainer / Buchstabiertafel-Trainer
+# Radio Alphabet Trainer / Funkalphabet-Trainer
 
-🇬🇧 [English](#english) | 🇩🇪 [Deutsch](#deutsch)
+[English](#english) | [Deutsch](#deutsch)
 
 ## English
 
 An interactive web application for learning and practicing NATO and German radio alphabets with speech support.
 
 ### Features
-- **Practice Mode**: Type letters as they're spoken with immediate feedback
-- **Test Mode**: Complete 10 words quickly with automatic progression
+- **Multiple Choice Mode**: A letter is displayed with four answer options. Click the correct code word. Auto-advances after 1 second.
+- **Dictation Mode**: Each letter is spoken aloud. Type the letter you hear with immediate feedback.
+- **Test Mode**: Complete 10 words quickly with automatic progression and final accuracy score
 - **Adjustable Speech Speed**: Control voice speed from 0.5x to 2x
 - **Visual Feedback**: Wrong letters shown in red during tests
 - **Multiple Alphabets**: Switch between NATO and German radio alphabets
-- **Additional Challenges**: Include dates and GPS coordinates
+- **Bilingual UI**: Switch between English and German interface using EN/DE buttons
+- **Word Options**: Toggle names, birth dates (DD.MM.YYYY), GPS coordinates, and German license plates independently
+- **German License Plates**: Real district codes with authentic syntax, including special government plates (BD, BP, BT, THW, Y, Z)
 - **Progress Tracking**: Monitor accuracy for each alphabet
 - **Responsive Design**: Works on desktop and mobile devices
 
 ### Usage
-1. Choose your preferred alphabet (NATO/German)
-2. Select practice or test mode
+1. Choose your preferred alphabet (NATO/German) by clicking the score boxes
+2. Switch between Multiple Choice and Dictation mode
 3. Adjust speech speed as needed (0.5x - 2x)
-4. Optional: Enable dates and coordinates
-5. Type the letters as they are spoken
-6. Monitor your progress with the scoring system
+4. Optional: Enable names, birth dates, GPS coordinates, and/or German license plates
+5. In dictation mode, disable names to practice only specific content (e.g., license plates only)
+6. Type the letters as they are spoken
+7. Monitor your progress with the scoring system
 
-### Practice Mode
-- Each letter must be typed correctly to proceed
+### Multiple Choice Mode
+- A letter is displayed with four answer options
+- Click the correct NATO or German code word
+- Auto-advances to the next letter after 1 second
+
+### Dictation Mode
+- Each letter is spoken aloud
+- In practice mode, each letter must be typed correctly to proceed
 - Immediate feedback on incorrect entries
-- Slower pace for learning
+- Symbols are spoken in radio communication style (e.g., "Strich" for "-", "Punkt" for ".")
 
 ### Test Mode
 - Complete 10 words as quickly as possible
@@ -37,30 +47,40 @@ An interactive web application for learning and practicing NATO and German radio
 
 ## Deutsch
 
-Eine interaktive Webanwendung zum Erlernen und Üben des NATO- und deutschen Buchstabieralphabets mit Sprachunterstützung.
+Eine interaktive Webanwendung zum Erlernen und Üben des NATO- und deutschen Funkalphabets mit Sprachunterstützung.
 
 ### Funktionen
-- **Übungsmodus**: Tippen Sie Buchstaben wie gesprochen mit sofortigem Feedback
-- **Testmodus**: Vervollständigen Sie 10 Wörter schnell mit automatischer Progression
+- **Multiple-Choice-Modus**: Ein Buchstabe wird mit vier Antwortmöglichkeiten angezeigt. Klicken Sie das richtige Buchstabierwort. Automatischer Weiterlauf nach 1 Sekunde.
+- **Diktatmodus**: Jeder Buchstabe wird angesagt. Tippen Sie den gehörten Buchstaben mit sofortigem Feedback.
+- **Testmodus**: Vervollständigen Sie 10 Wörter schnell mit automatischer Progression und abschließender Genauigkeitsbewertung
 - **Einstellbare Sprechgeschwindigkeit**: Steuern Sie die Sprechgeschwindigkeit von 0,5x bis 2x
 - **Visuelle Rückmeldung**: Falsche Buchstaben werden im Test rot angezeigt
-- **Mehrere Alphabete**: Wechsel zwischen NATO- und deutschem Buchstabieralphabet
-- **Zusätzliche Herausforderungen**: Einbindung von Daten und GPS-Koordinaten
+- **Mehrere Alphabete**: Wechsel zwischen NATO- und deutschem Funkalphabet
+- **Zweisprachige Oberfläche**: Umschaltung zwischen englischer und deutscher Oberfläche über EN/DE-Buttons
+- **Wortoptionen**: Namen, Geburtsdaten (TT.MM.JJJJ), GPS-Koordinaten und deutsche Kfz-Kennzeichen unabhängig voneinander aktivierbar
+- **Deutsche Kfz-Kennzeichen**: Echte Unterscheidungszeichen mit korrekter Syntax, inklusive behördlicher Sonderkennzeichen (BD, BP, BT, THW, Y, Z)
 - **Fortschrittsverfolgung**: Überwachen Sie Ihre Genauigkeit für jedes Alphabet
 - **Responsives Design**: Funktioniert auf Desktop und Mobilgeräten
 
 ### Verwendung
-1. Wählen Sie Ihr bevorzugtes Alphabet (NATO/Deutsch)
-2. Wählen Sie Übungs- oder Testmodus
+1. Wählen Sie Ihr bevorzugtes Alphabet (NATO/Deutsch) durch Klick auf die Punktefelder
+2. Wechseln Sie zwischen Multiple-Choice- und Diktatmodus
 3. Passen Sie die Sprechgeschwindigkeit an (0,5x - 2x)
-4. Optional: Aktivieren Sie Daten und Koordinaten
-5. Tippen Sie die Buchstaben wie gesprochen
-6. Überwachen Sie Ihren Fortschritt mit dem Punktesystem
+4. Optional: Namen, Geburtsdaten, GPS-Koordinaten und/oder Kfz-Kennzeichen aktivieren
+5. Im Diktatmodus Namen deaktivieren, um nur bestimmte Inhalte zu üben (z.B. nur Kennzeichen)
+6. Tippen Sie die Buchstaben wie gesprochen
+7. Überwachen Sie Ihren Fortschritt mit dem Punktesystem
 
-### Übungsmodus
-- Jeder Buchstabe muss korrekt eingegeben werden
+### Multiple-Choice-Modus
+- Ein Buchstabe wird mit vier Antwortmöglichkeiten angezeigt
+- Klicken Sie das richtige NATO- oder deutsche Buchstabierwort
+- Automatischer Weiterlauf zum nächsten Buchstaben nach 1 Sekunde
+
+### Diktatmodus
+- Jeder Buchstabe wird angesagt
+- Im Übungsmodus muss jeder Buchstabe korrekt eingegeben werden
 - Sofortige Rückmeldung bei falschen Eingaben
-- Langsameres Tempo zum Lernen
+- Symbole werden in Sprechfunk-Manier angesagt (z.B. "Strich" für "-", "Punkt" für ".")
 
 ### Testmodus
 - Vervollständigen Sie 10 Wörter so schnell wie möglich
