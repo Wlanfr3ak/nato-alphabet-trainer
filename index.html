@@ -230,6 +230,15 @@ License: GNU General Public License v3.0
             color: var(--military-text);
             text-decoration: underline;
         }
+        .version-stamp {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: var(--military-text);
+            opacity: 0.7;
+            letter-spacing: 1px;
+            font-family: 'Courier New', monospace;
+        }
         h1 {
             text-align: center;
             color: var(--military-highlight);
@@ -415,7 +424,6 @@ License: GNU General Public License v3.0
         <div class="display" id="multipleChoiceMode">
             <div class="letter" id="currentLetter"></div>
             <div class="multiple-choice" id="multipleChoice"></div>
-            <button onclick="generateNewLetter()" id="newLetterButton" data-i18n="newLetter">New Letter</button>
         </div>
 
         <div class="dictation-mode hidden" id="dictationMode">
@@ -447,7 +455,6 @@ License: GNU General Public License v3.0
             </div>
             <div class="word-display" id="currentWord"></div>
             <div class="dictation-controls">
-                <button onclick="speakNextLetter()" id="speakButton" data-i18n="speakNext">Speak Next Letter</button>
                 <input type="text" 
                        class="dictation-input" 
                        id="letterInput" 
@@ -528,6 +535,9 @@ License: GNU General Public License v3.0
         <div class="license">
             <p><a href="https://github.com/Wlanfr3ak/nato-alphabet-trainer">https://github.com/Wlanfr3ak/nato-alphabet-trainer</a><br>
             <span data-i18n="licensedUnder">Licensed under</span> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GNU General Public License v3.0</a></p>
+            <!--VERSION-START-->
+        <span class="version-stamp">v2026081216390001</span>
+        <!--VERSION-END-->
         </div>
     </div>
 
@@ -537,7 +547,6 @@ License: GNU General Public License v3.0
                 appTitle: 'Radio Alphabet Trainer',
                 switchMode: 'Switch Mode',
                 help: 'Help',
-                newLetter: 'New Letter',
                 includeNames: 'Include Names',
                 includeDates: 'Include Birth Dates',
                 includeCoords: 'Include GPS Coordinates',
@@ -545,7 +554,6 @@ License: GNU General Public License v3.0
                 testMode: 'Test Mode (10 Words)',
                 word: 'Word',
                 stopTest: 'Stop Test',
-                speakNext: 'Speak Next Letter',
                 typeLetter: 'Type letter',
                 testResults: 'Test Results',
                 totalChars: 'Total Characters:',
@@ -563,7 +571,6 @@ License: GNU General Public License v3.0
                 appTitle: 'Funkalphabet-Trainer',
                 switchMode: 'Modus wechseln',
                 help: 'Hilfe',
-                newLetter: 'Neuer Buchstabe',
                 includeNames: 'Namen einbeziehen',
                 includeDates: 'Geburtsdaten einbeziehen',
                 includeCoords: 'GPS-Koordinaten einbeziehen',
@@ -571,7 +578,6 @@ License: GNU General Public License v3.0
                 testMode: 'Testmodus (10 Wörter)',
                 word: 'Wort',
                 stopTest: 'Test stoppen',
-                speakNext: 'Nächsten Buchstaben sprechen',
                 typeLetter: 'Buchstabe eingeben',
                 testResults: 'Testergebnisse',
                 totalChars: 'Gesamtzeichen:',
@@ -1211,7 +1217,6 @@ License: GNU General Public License v3.0
             if (isTestMode) {
                 startNewTest();
                 document.getElementById('stopTestButton').classList.remove('hidden');
-                document.getElementById('speakButton').classList.add('hidden');
             } else {
                 stopTestMode();
             }
@@ -1223,8 +1228,6 @@ License: GNU General Public License v3.0
             document.getElementById('testModeStatus').classList.add('hidden');
             document.getElementById('testResults').classList.add('hidden');
             document.getElementById('stopTestButton').classList.add('hidden');
-            document.getElementById('speakButton').classList.remove('hidden');
-            document.getElementById('speakButton').disabled = false;
             document.getElementById('letterInput').disabled = false;
             startNewWord();
         }
@@ -1236,7 +1239,6 @@ License: GNU General Public License v3.0
             document.getElementById('testModeStatus').classList.remove('hidden');
             document.getElementById('testResults').classList.add('hidden');
             document.getElementById('currentWordCount').textContent = testWordCount;
-            document.getElementById('speakButton').disabled = false;
             document.getElementById('letterInput').disabled = false;
             startNewWord();
         }
@@ -1253,7 +1255,6 @@ License: GNU General Public License v3.0
                 document.getElementById('accuracyBar').style.width = `${accuracy}%`;
                 
                 document.getElementById('testResults').classList.remove('hidden');
-                document.getElementById('speakButton').disabled = true;
                 document.getElementById('letterInput').disabled = true;
             }
         }
@@ -1265,7 +1266,45 @@ License: GNU General Public License v3.0
             }
         }
 
+        /**
+         * Erkennt die Browsersprache anhand navigator.language /
+         * navigator.languages.
+         * - beginnt mit 'de' -> 'de'
+         * - beginnt mit 'en' -> 'en'
+         * - sonst (auch wenn nicht erkennbar) -> 'de' (Fallback laut Vorgabe)
+         */
+        function detectBrowserLanguage() {
+            try {
+                const langs = navigator.languages && navigator.languages.length
+                    ? navigator.languages
+                    : [navigator.language];
+                if (langs && langs[0]) {
+                    const tag = String(langs[0]).toLowerCase();
+                    if (tag.indexOf('de') === 0) return 'de';
+                    if (tag.indexOf('en') === 0) return 'en';
+                }
+            } catch (e) {
+                // navigator kann in manchen Kontexten fehlen -> Fallback
+            }
+            return 'de';
+        }
+
+        /**
+         * Initialisiert Sprache und Alphabet anhand der Browsersprache.
+         * 'de' -> deutsche UI + deutsches Alphabet
+         * 'en' -> englische UI + NATO-Alphabet
+         * Fallback (nicht erkennbar) -> Deutsch + deutsches Alphabet.
+         */
+        function initializeLanguageAndAlphabet() {
+            const lang = detectBrowserLanguage();
+            currentLang = lang;
+            currentAlphabet = (lang === 'en') ? natoAlphabet : germanAlphabet;
+            setLanguage(lang);
+            updateScores();
+        }
+
         // Initialize
+        initializeLanguageAndAlphabet();
         generateNewLetter();
         updateSpeedDescription();
     </script>
