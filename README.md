@@ -1,4 +1,8 @@
-# Radio Alphabet Trainer / Funkalphabet-Trainer (Created with Devins Desktop / AI&KI Technology!)
+# Radio Alphabet Trainer / Funkalphabet-Trainer
+
+(Created with Devins Desktop / AI&KI Technology!)
+
+Test it: https://dl9fhx.de/trainer/
 
 [English](#english) | [Deutsch](#deutsch)
 
