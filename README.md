@@ -1,4 +1,4 @@
-# Radio Alphabet Trainer / Funkalphabet-Trainer
+# Radio Alphabet Trainer / Funkalphabet-Trainer (Created with Devins Desktop / AI&KI Technology!)
 
 [English](#english) | [Deutsch](#deutsch)
 
