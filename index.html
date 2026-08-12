@@ -59,10 +59,12 @@ License: GNU General Public License v3.0
             text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
             font-family: 'Courier New', monospace;
         }
-        button:hover {
-            background-color: var(--military-highlight);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        @media (hover: hover) {
+            button:hover {
+                background-color: var(--military-highlight);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
         }
         button:active {
             transform: translateY(0);
@@ -104,9 +106,11 @@ License: GNU General Public License v3.0
             letter-spacing: 1px;
             font-family: 'Courier New', monospace;
         }
-        .choice-button:hover {
-            background-color: var(--military-accent);
-            transform: translateY(-1px);
+        @media (hover: hover) {
+            .choice-button:hover {
+                background-color: var(--military-accent);
+                transform: translateY(-1px);
+            }
         }
         .choice-button.correct {
             background-color: var(--correct-green);
@@ -351,6 +355,7 @@ License: GNU General Public License v3.0
             align-items: center;
             gap: 10px;
             margin: 10px 0;
+            flex-wrap: wrap;
         }
         .speed-control input[type="range"] {
             width: 150px;
@@ -359,6 +364,13 @@ License: GNU General Public License v3.0
         .speed-control label {
             color: var(--military-text);
             min-width: 60px;
+        }
+        .speed-desc {
+            font-size: 0.8em;
+            color: var(--military-highlight);
+            width: 100%;
+            text-align: center;
+            margin-top: 2px;
         }
         .lang-switcher {
             display: inline-flex;
@@ -479,13 +491,14 @@ License: GNU General Public License v3.0
             <label for="speechRate" id="speedLabel">Speed:</label>
             <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="0.8">
             <span id="speechRateValue">0.8x</span>
+            <div class="speed-desc" id="speedDesc"></div>
         </div>
 
         <div class="help-content hidden" id="helpContent">
             <div id="helpEn">
                 <h2>How to Use</h2>
                 <ul>
-                    <li><strong>Multiple Choice Mode:</strong> A letter is displayed and four answer options are shown. Click the correct NATO or German code word. The next letter appears automatically after 1 second.</li>
+                    <li><strong>Multiple Choice Mode:</strong> A letter is displayed and four answer options are shown. Click the correct NATO or German code word. The next letter appears automatically after a delay scaled by the speech speed slider.</li>
                     <li><strong>Dictation Mode:</strong> Each letter is spoken aloud. Type the letter you hear. In practice mode, incorrect entries are highlighted and you must enter the correct letter to proceed.</li>
                     <li><strong>Test Mode:</strong> Complete 10 words as quickly as possible. Wrong letters are shown in red, but you continue to the next letter automatically.</li>
                     <li><strong>Speech Speed:</strong> Adjust the voice speed using the slider (0.5x to 2x) for different training levels.</li>
@@ -499,7 +512,7 @@ License: GNU General Public License v3.0
             <div id="helpDe" class="hidden">
                 <h2>Bedienungsanleitung</h2>
                 <ul>
-                    <li><strong>Multiple-Choice-Modus:</strong> Ein Buchstabe wird angezeigt und vier Antwortmöglichkeiten werden gezeigt. Klicken Sie das richtige NATO- oder deutsche Buchstabierwort. Der nächste Buchstabe erscheint automatisch nach 1 Sekunde.</li>
+                    <li><strong>Multiple-Choice-Modus:</strong> Ein Buchstabe wird angezeigt und vier Antwortmöglichkeiten werden gezeigt. Klicken Sie das richtige NATO- oder deutsche Buchstabierwort. Der nächste Buchstabe erscheint automatisch nach einer Verzögerung, die über den Schieberegler eingestellt wird.</li>
                     <li><strong>Diktatmodus:</strong> Jeder Buchstabe wird angesagt. Tippen Sie den gehörten Buchstaben. Im Übungsmodus werden falsche Eingaben markiert und Sie müssen den richtigen Buchstaben eingeben, um fortzufahren.</li>
                     <li><strong>Testmodus:</strong> Vervollständigen Sie 10 Wörter so schnell wie möglich. Falsche Buchstaben werden rot angezeigt, aber Sie fahren automatisch mit dem nächsten Buchstaben fort.</li>
                     <li><strong>Sprechgeschwindigkeit:</strong> Passen Sie die Sprechgeschwindigkeit mit dem Schieberegler an (0,5x bis 2x) für verschiedene Übungsstufen.</li>
@@ -542,6 +555,8 @@ License: GNU General Public License v3.0
                 resetScores: 'Reset Scores',
                 germanScore: 'German Score',
                 speed: 'Speed:',
+                speedDescMC: 'Controls transition speed between questions',
+                speedDescDict: 'Controls speech speed of spoken letters',
                 licensedUnder: 'Licensed under'
             },
             de: {
@@ -566,6 +581,8 @@ License: GNU General Public License v3.0
                 resetScores: 'Punkte zurücksetzen',
                 germanScore: 'Deutsche Punkte',
                 speed: 'Geschwindigkeit:',
+                speedDescMC: 'Steuert die Übergangsgeschwindigkeit zwischen Fragen',
+                speedDescDict: 'Steuert die Sprechgeschwindigkeit der angesagten Buchstaben',
                 licensedUnder: 'Lizenziert unter'
             }
         };
@@ -581,6 +598,7 @@ License: GNU General Public License v3.0
             document.getElementById('helpBtn').textContent = t.help;
             document.getElementById('germanScoreLabel').textContent = t.germanScore;
             document.getElementById('speedLabel').textContent = t.speed;
+            updateSpeedDescription();
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
@@ -719,6 +737,10 @@ License: GNU General Public License v3.0
         let totalChars = 0;
         let correctChars = 0;
 
+        let recentLetters = []; // Cache last 10 letters to avoid repeats
+        const RECENT_LETTER_LIMIT = 10;
+        let lastCorrectPosition = -1; // Track position of correct answer to avoid repeats
+
         let wrongLetters = new Map(); // Store wrong letters and their positions
 
         let speechRate = 0.8;
@@ -775,7 +797,23 @@ License: GNU General Public License v3.0
         }
 
         function generateNewLetter() {
-            currentLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+            const allLetters = [];
+            for (let i = 0; i < 26; i++) {
+                const ch = String.fromCharCode(65 + i);
+                if (!recentLetters.includes(ch)) {
+                    allLetters.push(ch);
+                }
+            }
+            // Fallback: if all letters are in recent cache, use full alphabet
+            const pool = allLetters.length > 0 ? allLetters : Array.from({length: 26}, (_, i) => String.fromCharCode(65 + i));
+            currentLetter = pool[Math.floor(Math.random() * pool.length)];
+
+            // Update recent letters cache
+            recentLetters.push(currentLetter);
+            if (recentLetters.length > RECENT_LETTER_LIMIT) {
+                recentLetters.shift();
+            }
+
             document.getElementById('currentLetter').textContent = currentLetter;
             generateMultipleChoice();
         }
@@ -785,6 +823,15 @@ License: GNU General Public License v3.0
             const otherWords = generateWrongAnswers(currentLetter, correctWord);
             const choices = [correctWord, ...otherWords.slice(0, 3)];
             shuffleArray(choices);
+
+            // Ensure correct answer is not at the same position as last time
+            const correctPos = choices.indexOf(correctWord);
+            if (correctPos === lastCorrectPosition) {
+                // Swap correct answer with an adjacent position
+                const swapWith = (correctPos + 1) % choices.length;
+                [choices[correctPos], choices[swapWith]] = [choices[swapWith], choices[correctPos]];
+            }
+            lastCorrectPosition = choices.indexOf(correctWord);
 
             const multipleChoice = document.getElementById('multipleChoice');
             multipleChoice.innerHTML = '';
@@ -843,8 +890,9 @@ License: GNU General Public License v3.0
             
             updateScores();
 
-            // Auto-advance to next letter after 1 second
-            setTimeout(generateNewLetter, 1000);
+            // Auto-advance to next letter, delay scaled by speech rate
+            const advanceDelay = Math.round(1000 / speechRate);
+            setTimeout(generateNewLetter, advanceDelay);
         }
 
         function toggleHelp() {
@@ -857,10 +905,22 @@ License: GNU General Public License v3.0
             document.getElementById('multipleChoiceMode').classList.toggle('hidden', currentMode === 'dictation');
             document.getElementById('dictationMode').classList.toggle('hidden', currentMode === 'multipleChoice');
             
+            updateSpeedDescription();
+            
             if (currentMode === 'dictation') {
                 startNewWord();
             } else {
                 generateNewLetter();
+            }
+        }
+
+        function updateSpeedDescription() {
+            const desc = document.getElementById('speedDesc');
+            const t = i18n[currentLang];
+            if (currentMode === 'multipleChoice') {
+                desc.textContent = t.speedDescMC;
+            } else {
+                desc.textContent = t.speedDescDict;
             }
         }
 
@@ -1207,6 +1267,7 @@ License: GNU General Public License v3.0
 
         // Initialize
         generateNewLetter();
+        updateSpeedDescription();
     </script>
 </body>
 </html>
