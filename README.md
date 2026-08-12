@@ -11,22 +11,24 @@ Test it: https://dl9fhx.de/trainer/
 An interactive web application for learning and practicing NATO and German radio alphabets with speech support.
 
 ### Features
-- **Multiple Choice Mode**: A letter is displayed with four answer options. Click the correct code word. Auto-advances after 1 second.
+- **Multiple Choice Mode**: A letter is displayed with four answer options. Click the correct code word. Auto-advances after a delay scaled by the speech speed slider.
 - **Dictation Mode**: Each letter is spoken aloud. Type the letter you hear with immediate feedback.
 - **Test Mode**: Complete 10 words quickly with automatic progression and final accuracy score
-- **Adjustable Speech Speed**: Control voice speed from 0.5x to 2x
+- **Adjustable Speed**: Slider controls speech speed in dictation mode and transition speed between questions in multiple choice mode (0.5x to 2x)
 - **Visual Feedback**: Wrong letters shown in red during tests
 - **Multiple Alphabets**: Switch between NATO and German radio alphabets
 - **Bilingual UI**: Switch between English and German interface using EN/DE buttons
 - **Word Options**: Toggle names, birth dates (DD.MM.YYYY), GPS coordinates, and German license plates independently
 - **German License Plates**: Real district codes with authentic syntax, including special government plates (BD, BP, BT, THW, Y, Z)
+- **Anti-Repeat**: Letters are cached for 10 rounds to avoid repetition. The correct answer never appears at the same position twice in a row
+- **Touch-Optimized**: Hover effects only active on devices with mouse support
 - **Progress Tracking**: Monitor accuracy for each alphabet
 - **Responsive Design**: Works on desktop and mobile devices
 
 ### Usage
 1. Choose your preferred alphabet (NATO/German) by clicking the score boxes
 2. Switch between Multiple Choice and Dictation mode
-3. Adjust speech speed as needed (0.5x - 2x)
+3. Adjust speed as needed (0.5x - 2x) – affects speech in dictation mode and transition speed in multiple choice mode
 4. Optional: Enable names, birth dates, GPS coordinates, and/or German license plates
 5. In dictation mode, disable names to practice only specific content (e.g., license plates only)
 6. Type the letters as they are spoken
@@ -35,7 +37,7 @@ An interactive web application for learning and practicing NATO and German radio
 ### Multiple Choice Mode
 - A letter is displayed with four answer options
 - Click the correct NATO or German code word
-- Auto-advances to the next letter after 1 second
+- Auto-advances to the next letter after a delay scaled by the speech speed slider
 
 ### Dictation Mode
 - Each letter is spoken aloud
@@ -54,22 +56,24 @@ An interactive web application for learning and practicing NATO and German radio
 Eine interaktive Webanwendung zum Erlernen und Üben des NATO- und deutschen Funkalphabets mit Sprachunterstützung.
 
 ### Funktionen
-- **Multiple-Choice-Modus**: Ein Buchstabe wird mit vier Antwortmöglichkeiten angezeigt. Klicken Sie das richtige Buchstabierwort. Automatischer Weiterlauf nach 1 Sekunde.
+- **Multiple-Choice-Modus**: Ein Buchstabe wird mit vier Antwortmöglichkeiten angezeigt. Klicken Sie das richtige Buchstabierwort. Automatischer Weiterlauf nach einer Verzögerung, die über den Schieberegler eingestellt wird.
 - **Diktatmodus**: Jeder Buchstabe wird angesagt. Tippen Sie den gehörten Buchstaben mit sofortigem Feedback.
 - **Testmodus**: Vervollständigen Sie 10 Wörter schnell mit automatischer Progression und abschließender Genauigkeitsbewertung
-- **Einstellbare Sprechgeschwindigkeit**: Steuern Sie die Sprechgeschwindigkeit von 0,5x bis 2x
+- **Einstellbare Geschwindigkeit**: Schieberegler steuert die Sprechgeschwindigkeit im Diktatmodus und die Übergangsgeschwindigkeit im Multiple-Choice-Modus (0,5x bis 2x)
 - **Visuelle Rückmeldung**: Falsche Buchstaben werden im Test rot angezeigt
 - **Mehrere Alphabete**: Wechsel zwischen NATO- und deutschem Funkalphabet
 - **Zweisprachige Oberfläche**: Umschaltung zwischen englischer und deutscher Oberfläche über EN/DE-Buttons
 - **Wortoptionen**: Namen, Geburtsdaten (TT.MM.JJJJ), GPS-Koordinaten und deutsche Kfz-Kennzeichen unabhängig voneinander aktivierbar
 - **Deutsche Kfz-Kennzeichen**: Echte Unterscheidungszeichen mit korrekter Syntax, inklusive behördlicher Sonderkennzeichen (BD, BP, BT, THW, Y, Z)
+- **Anti-Wiederholung**: Buchstaben werden 10 Runden lang zwischengespeichert, um Wiederholungen zu vermeiden. Die richtige Antwort erscheint nie zweimal hintereinander an der gleichen Position
+- **Touch-optimiert**: Hover-Effekte nur auf Geräten mit Mausunterstützung aktiv
 - **Fortschrittsverfolgung**: Überwachen Sie Ihre Genauigkeit für jedes Alphabet
 - **Responsives Design**: Funktioniert auf Desktop und Mobilgeräten
 
 ### Verwendung
 1. Wählen Sie Ihr bevorzugtes Alphabet (NATO/Deutsch) durch Klick auf die Punktefelder
 2. Wechseln Sie zwischen Multiple-Choice- und Diktatmodus
-3. Passen Sie die Sprechgeschwindigkeit an (0,5x - 2x)
+3. Passen Sie die Geschwindigkeit an (0,5x - 2x) – beeinflusst Sprechgeschwindigkeit im Diktatmodus und Übergangsgeschwindigkeit im Multiple-Choice-Modus
 4. Optional: Namen, Geburtsdaten, GPS-Koordinaten und/oder Kfz-Kennzeichen aktivieren
 5. Im Diktatmodus Namen deaktivieren, um nur bestimmte Inhalte zu üben (z.B. nur Kennzeichen)
 6. Tippen Sie die Buchstaben wie gesprochen
@@ -78,7 +82,7 @@ Eine interaktive Webanwendung zum Erlernen und Üben des NATO- und deutschen Fun
 ### Multiple-Choice-Modus
 - Ein Buchstabe wird mit vier Antwortmöglichkeiten angezeigt
 - Klicken Sie das richtige NATO- oder deutsche Buchstabierwort
-- Automatischer Weiterlauf zum nächsten Buchstaben nach 1 Sekunde
+- Automatischer Weiterlauf zum nächsten Buchstaben nach einer Verzögerung, die über den Schieberegler eingestellt wird
 
 ### Diktatmodus
 - Jeder Buchstabe wird angesagt
