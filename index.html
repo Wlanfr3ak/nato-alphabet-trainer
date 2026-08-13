@@ -812,6 +812,7 @@ License: GNU General Public License v3.0
                             <li><strong>Test Mode:</strong> Complete 10 words as quickly as possible. Wrong letters are shown in red, but you continue to the next letter automatically.</li>
                             <li><strong>Speech Speed:</strong> Adjust the voice speed using the number input (0.5x to 2x) for different training levels.</li>
                             <li><strong>Word Options:</strong> Toggle names, birth dates (DD.MM.YYYY), GPS coordinates, and German license plates for varied practice. Disable names to practice only specific content.</li>
+                            <li><strong>German Dictation Words:</strong> When the German alphabet is selected, a dedicated pool of German words with real umlauts (Ä, Ö, Ü), ß, and letter combinations (SCH, CH) is used for dictation. Multi-character tokens (SCH, CH) are typed as a single unit.</li>
                             <li><strong>German License Plates:</strong> Real German district codes with proper syntax, including special government plates (BD, BP, BT, THW, Y, Z).</li>
                             <li><strong>Alphabets:</strong> Switch between NATO and German alphabets using the NATO/DE checkboxes at the top.</li>
                             <li><strong>Language:</strong> Switch the UI language between English and German using the EN/DE buttons.</li>
@@ -826,6 +827,7 @@ License: GNU General Public License v3.0
                             <li><strong>Testmodus:</strong> Vervollständigen Sie 10 Wörter so schnell wie möglich. Falsche Buchstaben werden rot angezeigt, aber Sie fahren automatisch mit dem nächsten Buchstaben fort.</li>
                             <li><strong>Sprechgeschwindigkeit:</strong> Passen Sie die Sprechgeschwindigkeit mit der Zahleneingabe an (0,5x bis 2x) für verschiedene Übungsstufen.</li>
                             <li><strong>Wortoptionen:</strong> Namen, Geburtsdaten (TT.MM.JJJJ), GPS-Koordinaten und deutsche Kfz-Kennzeichen einzeln aktivierbar. Namen deaktivieren, um nur bestimmte Inhalte zu üben.</li>
+                            <li><strong>Deutsche Diktatwörter:</strong> Bei aktivem deutschem Alphabet wird ein eigener Wörterpool mit echten Umlauten (Ä, Ö, Ü), ß und Buchstabenkombinationen (SCH, CH) für das Diktat verwendet. Mehrzeichen-Tokens (SCH, CH) werden als eine Einheit eingegeben.</li>
                             <li><strong>Deutsche Kfz-Kennzeichen:</strong> Echte deutsche Unterscheidungszeichen mit korrekter Syntax, inklusive behördlicher Sonderkennzeichen (BD, BP, BT, THW, Y, Z).</li>
                             <li><strong>Alphabete:</strong> Wechseln Sie zwischen NATO- und deutschem Alphabet über die NATO/DE-Checkboxen oben.</li>
                             <li><strong>Sprache:</strong> Schalten Sie die Oberflächensprache zwischen Englisch und Deutsch mit den EN/DE-Buttons um.</li>
@@ -833,14 +835,14 @@ License: GNU General Public License v3.0
                         </ul>
                     </div>
                 </div>
-                <div class="license">
-                    <p><a href="https://github.com/Wlanfr3ak/nato-alphabet-trainer">https://github.com/Wlanfr3ak/nato-alphabet-trainer</a><br>
-                    <span data-i18n="licensedUnder">Licensed under</span> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GNU General Public License v3.0</a></p>
-                    <!--VERSION-START-->
-        <span class="version-stamp">v2026081217190001</span>
-        <!--VERSION-END-->
-                </div>
             </div>
+        </div>
+        <div class="license">
+            <p><a href="https://github.com/Wlanfr3ak/nato-alphabet-trainer">https://github.com/Wlanfr3ak/nato-alphabet-trainer</a><br>
+            <span data-i18n="licensedUnder">Licensed under</span> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GNU General Public License v3.0</a></p>
+            <!--VERSION-START-->
+        <span class="version-stamp">v2026081308460001</span>
+        <!--VERSION-END-->
         </div>
     </div>
 
@@ -1001,7 +1003,12 @@ License: GNU General Public License v3.0
             "GUSTAV", "HEINRICH", "IDA", "JULIUS", "KARL", "LUDWIG",
             "MARTHA", "NIKOLAUS", "OTTO", "PAULA", "QUELLE", "RICHARD",
             "SIEGFRIED", "THEODOR", "ULRICH", "VIKTOR", "WILHELM", "XANTHIPPE",
-            "YVONNE", "ZACHARIAS", "MARIA", "HANS", "PETER", "THOMAS"
+            "YVONNE", "ZACHARIAS", "MARIA", "HANS", "PETER", "THOMAS",
+            "ANDREA", "BERNHARD", "CHRISTINA", "DANIEL", "ELISABETH", "FRANZ",
+            "GERHARD", "HEIKE", "INGRID", "JOACHIM", "KLAUS", "LAURA",
+            "MARTIN", "NORA", "OLIVER", "PATRICK", "QUENTIN", "RENE",
+            "SABINE", "TORSTEN", "UTE", "VOLKER", "WALTER", "XAVIER",
+            "YVETTE", "ZOE", "BARBARA", "CHRISTIAN", "DORIS", "EDGAR"
         ];
 
         const lastNames = [
@@ -1009,7 +1016,33 @@ License: GNU General Public License v3.0
             "WAGNER", "BECKER", "SCHULZ", "HOFFMANN", "SCHAEFER", "KOCH",
             "BAUER", "RICHTER", "KLEIN", "WOLF", "SCHROEDER", "NEUMANN",
             "SCHWARZ", "ZIMMERMANN", "BRAUN", "KRUEGER", "HOFMANN", "HARTMANN",
-            "LANGE", "SCHMITT", "WERNER", "SCHMITZ", "KRAUSE", "MEIER"
+            "LANGE", "SCHMITT", "WERNER", "SCHMITZ", "KRAUSE", "MEIER",
+            "LEHMANN", "KELLER", "VOGT", "SOMMER", "ENGEL", "HORN",
+            "BUCHNER", "GRAF", "PFEIFFER", "WINTER", "KOENIG", "FRANKE",
+            "BERGER", "STOLL", "MAYER", "BECK", "VOSS", "ZIEGLER",
+            "ADAM", "BACH", "DAHL", "ECKERT", "FASSBENDER", "GROSS",
+            "HAHN", "IMMERMANN", "JUNG", "KAUFMANN", "LAMBERT", "NAUMANN"
+        ];
+
+        // Deutsche Wörter mit echten Umlauten/Sonderzeichen für das Diktat
+        // Enthalten gezielt Ä, Ö, Ü, ß, SCH, CH
+        const germanWordPool = [
+            "MÜNCHEN", "KÖLN", "LÜBECK", "MÜNSTER", "DÜSSELDORF", "WÜRZBURG",
+            "GÖTTINGEN", "RÜDELSHEIM", "SCHULE", "SCHIFF", "SCHNEE", "SCHWARZ",
+            "SCHREIBEN", "SCHLAFEN", "SCHNELL", "SCHWIMMEN", "SCHÖN", "SCHÜLER",
+            "SCHACHT", "SCHLÜSSEL", "GESCHICHTE", "FORSCHUNG", "VERSUCH",
+            "BUCH", "FACH", "SICHT", "SUCHEN", "RECHNUNG", "LICHT", "SACHT",
+            "MÄDCHEN", "MÄRCHEN", "LÄCHELN", "WÄSCHE", "SPRÜCHE", "STREICHHOLZ",
+            "GRÖßE", "STRAßE", "FUßBALL", "SCHUß", "SCHLIEßEN", "GRIEß",
+            "ÄRGER", "BÄR", "GÄNSE", "HÄUSER", "KÄSE", "LÄRM", "MÄRZ",
+            "WÄHLEN", "ZÄHLER", "BÄCKER", "ÄCKER", "HÄHNE", "VÄTER",
+            "ÖFFNEN", "ÖL", "LÖSUNG", "RÖMISCH", "TÖNE", "VÖGEL", "WÖLFE",
+            "ZÖGERN", "KÖHLER", "MÖBEL", "FLÖTE", "STÖREN", "BÖSER",
+            "ÜBEN", "ÜBER", "TÜR", "WÜRDE", "BRÜCKE", "FLÜGEL", "GLÜCK",
+            "HÜGEL", "KÜHLE", "WÜRFEL", "ZÜGE", "FÜHRER", "SPRÜHE",
+            "RÜDIGER", "GÜNTHER", "JÜRGEN", "KÄTHE", "BÄRBEL", "HÄNSEL",
+            "MÜLLER", "SCHÄFER", "LÜBBEN", "KÖHLER", "RÖMER", "TÖPFER",
+            "VÖLKER", "ZÖLLNER", "HÄUSSLER", "NÜSSLEIN", "PÖHLMANN", "WÖHLER"
         ];
 
         let currentAlphabet = natoAlphabet;
@@ -1043,8 +1076,55 @@ License: GNU General Public License v3.0
         let lastCorrectPosition = -1; // Track position of correct answer to avoid repeats
 
         let wrongLetters = new Map(); // Store wrong letters and their positions
+        let currentWordTokens = []; // Tokenized word (SCH, CH, Ä, Ö, Ü, ß als einzelne Tokens)
 
         let speechRate = 0.8;
+
+        /**
+         * Zerlegt ein Wort in Tokens für das Diktat.
+         * Bei deutschem Alphabet werden SCH (3 Zeichen), CH (2 Zeichen),
+         * Ä/Ö/Ü/ß als einzelne Tokens erkannt.
+         * Bei NATO-Alphabet wird jedes Zeichen einzeln zurückgegeben.
+         * Leerzeichen, Zahlen und Symbole bleiben als einzelne Tokens.
+         */
+        function tokenizeWord(word) {
+            const isGerman = currentAlphabet === germanAlphabet;
+            const tokens = [];
+            let i = 0;
+            while (i < word.length) {
+                if (isGerman) {
+                    const rest = word.substr(i);
+                    // SCH (3 Zeichen) - längster Match zuerst
+                    if (rest.length >= 3 && rest.substr(0, 3).toUpperCase() === 'SCH') {
+                        tokens.push('SCH');
+                        i += 3;
+                        continue;
+                    }
+                    // CH (2 Zeichen)
+                    if (rest.length >= 2 && rest.substr(0, 2).toUpperCase() === 'CH') {
+                        tokens.push('CH');
+                        i += 2;
+                        continue;
+                    }
+                    // ß (auch ẞ Großes Eszett)
+                    if (word[i] === 'ß' || word[i] === 'ẞ') {
+                        tokens.push('ß');
+                        i += 1;
+                        continue;
+                    }
+                    // Ä/ä, Ö/ö, Ü/ü
+                    if (['ä', 'Ä', 'ö', 'Ö', 'ü', 'Ü'].includes(word[i])) {
+                        tokens.push(word[i].toUpperCase());
+                        i += 1;
+                        continue;
+                    }
+                }
+                // Alle anderen Zeichen (A-Z, Leerzeichen, Zahlen, Symbole)
+                tokens.push(word[i].toUpperCase());
+                i += 1;
+            }
+            return tokens;
+        }
 
         document.getElementById('speechRate').addEventListener('change', function(e) {
             let val = parseFloat(e.target.value);
@@ -1266,38 +1346,49 @@ License: GNU General Public License v3.0
             const includeDates = document.getElementById('includeDates').checked;
             const includeCoords = document.getElementById('includeCoords').checked;
             const includePlates = document.getElementById('includePlates').checked;
-            
+            const isGerman = currentAlphabet === germanAlphabet;
+
             let result = '';
-            
+
             // Generate name if selected
             if (includeNames) {
-                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-                result = `${firstName} ${lastName}`;
+                if (isGerman) {
+                    // Bei deutschem Alphabet: deutsche Wörter mit echten Umlauten/SCH/CH/ß
+                    const word = germanWordPool[Math.floor(Math.random() * germanWordPool.length)];
+                    result = word;
+                } else {
+                    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    result = `${firstName} ${lastName}`;
+                }
             }
-            
+
             // Add birth date if selected
             if (includeDates) {
                 result += (result ? ' ' : '') + generateBirthDate();
             }
-            
+
             // Add coordinates if selected
             if (includeCoords) {
                 result += (result ? ' ' : '') + generateGPSCoordinates();
             }
-            
+
             // Add license plate if selected
             if (includePlates) {
                 result += (result ? ' ' : '') + generateLicensePlate();
             }
-            
+
             // Fallback if nothing selected
             if (!result) {
-                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-                result = `${firstName} ${lastName}`;
+                if (isGerman) {
+                    result = germanWordPool[Math.floor(Math.random() * germanWordPool.length)];
+                } else {
+                    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    result = `${firstName} ${lastName}`;
+                }
             }
-            
+
             return result;
         }
 
@@ -1358,14 +1449,18 @@ License: GNU General Public License v3.0
 
         function startNewWord() {
             currentWord = generateWord();
+            currentWordTokens = tokenizeWord(currentWord);
             currentLetterIndex = -1;
-            wrongLetters = new Map(); // Track wrong letters
-            // Update visualization to put space in the middle
-            const visualWord = currentWord.split('').map(char => char === ' ' ? '␣' : '_').join(' ');
+            wrongLetters = new Map(); // Track wrong letters (key = token index)
+            // Update visualization: ein Platzhalter pro Token
+            const visualWord = currentWordTokens.map(token => token === ' ' ? '␣' : '_').join(' ');
             document.getElementById('currentWord').textContent = visualWord;
-            document.getElementById('letterInput').value = '';
-            document.getElementById('letterInput').focus();
-            
+            const inputField = document.getElementById('letterInput');
+            inputField.value = '';
+            // maxlength dynamisch setzen (SCH=3, CH=2, sonst 1)
+            updateInputMaxLength(inputField);
+            inputField.focus();
+
             // Clear any pending speech and start first letter
             speechSynth.cancel();
             setTimeout(() => {
@@ -1374,29 +1469,56 @@ License: GNU General Public License v3.0
             }, 50);
         }
 
+        /**
+         * Setzt das maxlength-Attribut des Input-Felds basierend
+         * auf dem naechsten zu tippenden Token (SCH=3, CH=2, sonst 1).
+         */
+        function updateInputMaxLength(inputField) {
+            // currentLetterIndex zeigt nach startNewWord auf -1 (-> Token 0),
+            // nach advance auf den naechsten zu tippenden Token
+            const idx = currentLetterIndex === -1 ? 0 : currentLetterIndex;
+            if (idx < currentWordTokens.length) {
+                inputField.maxLength = currentWordTokens[idx].length;
+            } else {
+                inputField.maxLength = 1;
+            }
+        }
+
         function checkLetter(event) {
             if (currentLetterIndex === -1) return;
-            
-            const input = event.target.value.toUpperCase();
+
+            const expectedToken = currentWordTokens[currentLetterIndex];
+            if (!expectedToken) return;
+
+            // Bei Multi-Char-Tokens (SCH=3, CH=2) erst pruefen wenn Eingabe komplett
+            let rawInput = event.target.value;
+            if (rawInput.length < expectedToken.length) return;
+
+            // Normalisierung: ß nicht toUpperCase (würde zu SS werden)
+            let input;
+            if (expectedToken === 'ß') {
+                input = rawInput; // ß bleibt ß
+            } else {
+                input = rawInput.toUpperCase();
+            }
             if (input === '') return;
-            
-            const correctLetter = currentWord[currentLetterIndex];
+
             const inputField = document.getElementById('letterInput');
-            
+
             if (isTestMode) {
                 totalChars++;
-                if (input === correctLetter) {
+                if (input === expectedToken) {
                     correctChars++;
                 } else {
                     // Store wrong letter
                     wrongLetters.set(currentLetterIndex, input);
                 }
-                
+
                 // Update display and continue immediately
                 updateWordDisplay();
                 inputField.value = '';
-                
-                if (currentLetterIndex === currentWord.length - 1) {
+
+                if (currentLetterIndex === currentWordTokens.length - 1) {
                     testWordCount++;
                     updateTestStatus();
                     if (testWordCount < 10) {
@@ -1405,13 +1527,14 @@ License: GNU General Public License v3.0
                 } else {
                     // Move to next letter immediately
                     currentLetterIndex++;
+                    updateInputMaxLength(inputField);
                     // Clear any pending speech and start next letter
                     speechSynth.cancel();
                     speakNextLetter();
                 }
             } else {
                 // Practice mode
-                if (input === correctLetter) {
+                if (input === expectedToken) {
                     if (currentAlphabet === germanAlphabet) {
                         germanCorrect++;
                     } else {
@@ -1419,11 +1542,12 @@ License: GNU General Public License v3.0
                     }
                     updateWordDisplay();
                     inputField.value = '';
-                    
-                    if (currentLetterIndex === currentWord.length - 1) {
+
+                    if (currentLetterIndex === currentWordTokens.length - 1) {
                         setTimeout(startNewWord, 500);
                     } else {
                         currentLetterIndex++;
+                        updateInputMaxLength(inputField);
                         speechSynth.cancel();
                         speakNextLetter();
                     }
@@ -1443,15 +1567,15 @@ License: GNU General Public License v3.0
                     speakNextLetter();
                 }
             }
-            
+
             updateScores();
         }
 
         function updateWordDisplay() {
             const wordDisplay = document.getElementById('currentWord');
-            const displayedWord = Array(currentWord.length);
-            
-            for (let i = 0; i < currentWord.length; i++) {
+            const displayedWord = Array(currentWordTokens.length);
+
+            for (let i = 0; i < currentWordTokens.length; i++) {
                 if (i > currentLetterIndex) {
                     displayedWord[i] = '_';
                 } else if (wrongLetters.has(i)) {
@@ -1460,15 +1584,15 @@ License: GNU General Public License v3.0
                     span.textContent = wrongLetters.get(i);
                     displayedWord[i] = span.outerHTML;
                 } else {
-                    displayedWord[i] = currentWord[i] === ' ' ? '␣' : currentWord[i];
+                    displayedWord[i] = currentWordTokens[i] === ' ' ? '␣' : currentWordTokens[i];
                 }
             }
-            
+
             wordDisplay.innerHTML = displayedWord.join(' ');
         }
 
         function speakNextLetter() {
-            if (currentLetterIndex > currentWord.length - 1 && currentLetterIndex !== -1) {
+            if (currentLetterIndex > currentWordTokens.length - 1 && currentLetterIndex !== -1) {
                 if (isTestMode) {
                     testWordCount++;
                     updateTestStatus();
@@ -1480,14 +1604,14 @@ License: GNU General Public License v3.0
                 }
                 return;
             }
-            
+
             if (currentLetterIndex === -1) {
                 currentLetterIndex = 0;
             }
-            
-            const letter = currentWord[currentLetterIndex];
+
+            const letter = currentWordTokens[currentLetterIndex];
             const isGerman = currentAlphabet === germanAlphabet;
-            
+
             // Special handling for numbers and symbols
             if (letter === ' ') {
                 const utterance = new SpeechSynthesisUtterance(isGerman ? 'neues wort' : 'space');
@@ -1497,9 +1621,9 @@ License: GNU General Public License v3.0
                 speechSynth.speak(utterance);
                 return;
             }
-            
+
             if (letter === '/' || letter === '.' || letter === '-') {
-                const word = letter === '/' 
+                const word = letter === '/'
                     ? (isGerman ? 'schrägstrich' : 'slash')
                     : letter === '.'
                     ? (isGerman ? 'punkt' : 'point')
@@ -1511,7 +1635,7 @@ License: GNU General Public License v3.0
                 speechSynth.speak(utterance);
                 return;
             }
-            
+
             if (!isNaN(letter)) {
                 const utterance = new SpeechSynthesisUtterance(letter);
                 utterance.lang = isGerman ? 'de-DE' : 'en-US';
