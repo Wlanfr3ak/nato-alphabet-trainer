@@ -20,6 +20,7 @@ An interactive web application for learning and practicing NATO and German radio
 - **Bilingual UI**: Switch between English and German interface using EN/DE buttons
 - **Browser Language Detection**: UI language and alphabet are pre-selected based on the browser language. German browsers get German UI + German alphabet, English browsers get English UI + NATO alphabet. Fallback is German.
 - **Word Options**: Toggle names, birth dates (DD.MM.YYYY), GPS coordinates, and German license plates independently
+- **German Dictation Words**: When the German alphabet is selected, a dedicated pool of German words with real umlauts (Ä, Ö, Ü), ß, and letter combinations (SCH, CH) is used for dictation. Multi-character tokens (SCH, CH) are typed as a single unit
 - **German License Plates**: Real district codes with authentic syntax, including special government plates (BD, BP, BT, THW, Y, Z)
 - **Anti-Repeat**: Letters are cached for 10 rounds to avoid repetition. The correct answer never appears at the same position twice in a row
 - **Touch-Optimized**: Hover effects only active on devices with mouse support
@@ -47,6 +48,7 @@ An interactive web application for learning and practicing NATO and German radio
 - On a wrong entry the letter is repeated automatically so you get another chance
 - Immediate feedback on incorrect entries
 - Symbols are spoken in radio communication style (e.g., "Strich" for "-", "Punkt" for ".")
+- With the German alphabet, a dedicated word pool with real umlauts (Ä, Ö, Ü), ß, and letter combinations (SCH, CH) is used. SCH and CH are typed as a single unit (input field adapts automatically)
 
 ### Test Mode
 - Complete 10 words as quickly as possible
@@ -68,6 +70,7 @@ Eine interaktive Webanwendung zum Erlernen und Üben des NATO- und deutschen Fun
 - **Zweisprachige Oberfläche**: Umschaltung zwischen englischer und deutscher Oberfläche über EN/DE-Buttons
 - **Browsersprach-Erkennung**: UI-Sprache und Alphabet werden anhand der Browsersprache vorausgewählt. Deutsche Browser erhalten deutsche Oberfläche + deutsches Alphabet, englische Browser erhalten englische Oberfläche + NATO-Alphabet. Fallback ist Deutsch.
 - **Wortoptionen**: Namen, Geburtsdaten (TT.MM.JJJJ), GPS-Koordinaten und deutsche Kfz-Kennzeichen unabhängig voneinander aktivierbar
+- **Deutsche Diktatwörter**: Bei aktivem deutschem Alphabet wird ein eigener Wörterpool mit echten Umlauten (Ä, Ö, Ü), ß und Buchstabenkombinationen (SCH, CH) für das Diktat verwendet. Mehrzeichen-Tokens (SCH, CH) werden als eine Einheit eingegeben
 - **Deutsche Kfz-Kennzeichen**: Echte Unterscheidungszeichen mit korrekter Syntax, inklusive behördlicher Sonderkennzeichen (BD, BP, BT, THW, Y, Z)
 - **Anti-Wiederholung**: Buchstaben werden 10 Runden lang zwischengespeichert, um Wiederholungen zu vermeiden. Die richtige Antwort erscheint nie zweimal hintereinander an der gleichen Position
 - **Touch-optimiert**: Hover-Effekte nur auf Geräten mit Mausunterstützung aktiv
@@ -95,6 +98,7 @@ Eine interaktive Webanwendung zum Erlernen und Üben des NATO- und deutschen Fun
 - Bei falscher Eingabe wird der Buchstabe automatisch wiederholt, sodass Sie eine neue Chance erhalten
 - Sofortige Rückmeldung bei falschen Eingaben
 - Symbole werden in Sprechfunk-Manier angesagt (z.B. "Strich" für "-", "Punkt" für ".")
+- Bei deutschem Alphabet wird ein eigener Wörterpool mit echten Umlauten (Ä, Ö, Ü), ß und Buchstabenkombinationen (SCH, CH) verwendet. SCH und CH werden als eine Einheit eingegeben (Eingabefeld passt sich automatisch an)
 
 ### Testmodus
 - Vervollständigen Sie 10 Wörter so schnell wie möglich
@@ -122,6 +126,6 @@ GNU General Public License v3.0 - [View License](https://www.gnu.org/licenses/gp
 ---
 
 <!--VERSION-START-->
-**Version:** 2026081217190001
+**Version:** 2026081308460001
 <!--VERSION-END-->
 
